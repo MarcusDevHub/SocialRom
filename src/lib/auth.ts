@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
             name: 'Credentials',
             credentials: {
                 email: { label: 'Email', type: 'email' },
-                password: { label: 'Password', type: 'password' },
+                password: { label: 'Senha', type: 'password' },
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
@@ -22,15 +22,14 @@ export const authOptions: NextAuthOptions = {
 
                 if (!user) return null;
 
-                // No futuro vamos garantir que user tenha um campo password
-                // por agora deixe preparado
-                const hasPassword = (user as any).password as string | undefined;
-                if (!hasPassword) return null;
-
-                const isValid = bcrypt.compareSync(credentials.password, hasPassword);
+                const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) return null;
 
-                return user;
+                return {
+                    id: user.id,
+                    email: user.email,
+                    name: user.username, // usamos username como “name” na sessão
+                };
             },
         }),
     ],
