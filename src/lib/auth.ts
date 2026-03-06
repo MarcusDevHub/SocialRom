@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
                 return {
                     id: user.id,
                     email: user.email,
-                    name: user.username, // usamos username como “name” na sessão
+                    name: user.username,
                 };
             },
         }),
