@@ -13,6 +13,14 @@ export default function Home() {
           priority
         />
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <header className="flex justify-end mb-4">
+            <a
+              href="/auth/signin"
+              className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold"
+            >
+              Entrar / Criar conta
+            </a>
+          </header>
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             To get started, edit the page.tsx file.
           </h1>
