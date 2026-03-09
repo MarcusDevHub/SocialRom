@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SignUpPage() {
     const router = useRouter();
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,30 +13,33 @@ export default function SignUpPage() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        const res = await fetch('/api/auth/signup', {
+        const response = await fetch('/api/auth/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password }),
         });
 
-        if (res.ok) {
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Conta criada com sucesso');
             router.push('/auth/signin');
         } else {
-            const data = await res.json();
             alert(data.error || 'Erro ao criar conta');
         }
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-black text-white">
-            <div className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-xl">
-                <h1 className="text-3xl font-bold mb-6 text-center">Criar conta no SocialRom</h1>
+        <main className="min-h-screen flex items-center justify-center bg-black text-white p-6">
+            <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-xl">
+                <h1 className="mb-6 text-3xl font-bold">Criar conta</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block mb-1 text-sm">Username</label>
+                        <label className="mb-1 block text-sm text-gray-300">Username</label>
                         <input
-                            className="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            type="text"
+                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
@@ -43,10 +47,10 @@ export default function SignUpPage() {
                     </div>
 
                     <div>
-                        <label className="block mb-1 text-sm">Email</label>
+                        <label className="mb-1 block text-sm text-gray-300">Email</label>
                         <input
                             type="email"
-                            className="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -54,10 +58,10 @@ export default function SignUpPage() {
                     </div>
 
                     <div>
-                        <label className="block mb-1 text-sm">Senha</label>
+                        <label className="mb-1 block text-sm text-gray-300">Senha</label>
                         <input
                             type="password"
-                            className="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -66,13 +70,13 @@ export default function SignUpPage() {
 
                     <button
                         type="submit"
-                        className="w-full bg-green-600 hover:bg-green-700 py-2 rounded font-semibold transition-colors"
+                        className="w-full rounded-lg bg-green-600 py-2 font-semibold hover:bg-green-700"
                     >
                         Criar conta
                     </button>
                 </form>
 
-                <p className="mt-4 text-sm text-center text-gray-400">
+                <p className="mt-4 text-sm text-gray-400">
                     Já tem conta?{' '}
                     <a href="/auth/signin" className="text-blue-400 hover:underline">
                         Entrar
