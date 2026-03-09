@@ -10,8 +10,16 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
+    const [isLoading, setIsLoading] = useState(false);
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
+        setIsLoading(true);
+        setMessage('');
+        setMessageType('');
 
         const response = await fetch('/api/auth/signup', {
             method: 'POST',
@@ -22,17 +30,39 @@ export default function SignUpPage() {
         const data = await response.json();
 
         if (response.ok) {
-            alert('Conta criada com sucesso');
-            router.push('/auth/signin');
+            setMessage('Conta criada com sucesso! Você será redirecionado para o login.');
+            setMessageType('success');
+
+            setUsername('');
+            setEmail('');
+            setPassword('');
+
+            setTimeout(() => {
+                router.push('/auth/signin');
+            }, 1500);
         } else {
-            alert(data.error || 'Erro ao criar conta');
+            setMessage(data.error || 'Erro ao criar conta');
+            setMessageType('error');
         }
+
+        setIsLoading(false);
     }
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-black text-white p-6">
             <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-xl">
                 <h1 className="mb-6 text-3xl font-bold">Criar conta</h1>
+
+                {message && (
+                    <div
+                        className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${messageType === 'success'
+                            ? 'bg-green-900/40 text-green-300 border border-green-700'
+                            : 'bg-red-900/40 text-red-300 border border-red-700'
+                            }`}
+                    >
+                        {message}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -70,9 +100,10 @@ export default function SignUpPage() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-green-600 py-2 font-semibold hover:bg-green-700"
+                        disabled={isLoading}
+                        className="w-full rounded-lg bg-green-600 py-2 font-semibold hover:bg-green-700 disabled:opacity-60"
                     >
-                        Criar conta
+                        {isLoading ? 'Criando conta...' : 'Criar conta'}
                     </button>
                 </form>
 
