@@ -14,17 +14,33 @@ export const authOptions: NextAuthOptions = {
                 password: { label: 'Senha', type: 'password' },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null;
+                // Impede login vazio
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
+                }
 
+                // Busca usuário no banco pelo email
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
 
-                if (!user) return null;
+                // Se não existir, login falha
+                if (!user) {
+                    return null;
+                }
 
-                const isValid = await bcrypt.compare(credentials.password, user.password);
-                if (!isValid) return null;
+                // Compara senha digitada com hash salvo
+                const passwordMatch = await bcrypt.compare(
+                    credentials.password,
+                    user.password
+                );
 
+                // Se não bater, login falha
+                if (!passwordMatch) {
+                    return null;
+                }
+
+                // Retorna os dados mínimos para a sessão
                 return {
                     id: user.id,
                     email: user.email,
