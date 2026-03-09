@@ -2,50 +2,42 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/';
-    const error = searchParams.get('error');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        const res = await signIn('credentials', {
-            redirect: false,
+
+        const result = await signIn('credentials', {
             email,
             password,
-            callbackUrl,
+            redirect: false,
         });
 
-        if (res?.ok) {
-            router.push(callbackUrl);
+        if (result?.ok) {
+            router.push('/');
+            router.refresh();
         } else {
             alert('Email ou senha inválidos');
         }
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-black text-white">
-            <div className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-xl">
-                <h1 className="text-3xl font-bold mb-6 text-center">Entrar no SocialRom</h1>
-
-                {error && (
-                    <p className="mb-4 text-red-400 text-center">
-                        Ocorreu um erro ao autenticar. Tente novamente.
-                    </p>
-                )}
+        <main className="min-h-screen flex items-center justify-center bg-black text-white p-6">
+            <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-xl">
+                <h1 className="mb-6 text-3xl font-bold">Entrar no SocialRom</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block mb-1 text-sm">Email</label>
+                        <label className="mb-1 block text-sm text-gray-300">Email</label>
                         <input
                             type="email"
-                            className="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -53,10 +45,10 @@ export default function SignInPage() {
                     </div>
 
                     <div>
-                        <label className="block mb-1 text-sm">Senha</label>
+                        <label className="mb-1 block text-sm text-gray-300">Senha</label>
                         <input
                             type="password"
-                            className="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -65,13 +57,13 @@ export default function SignInPage() {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold transition-colors"
+                        className="w-full rounded-lg bg-blue-600 py-2 font-semibold hover:bg-blue-700"
                     >
                         Entrar
                     </button>
                 </form>
 
-                <p className="mt-4 text-sm text-center text-gray-400">
+                <p className="mt-4 text-sm text-gray-400">
                     Ainda não tem conta?{' '}
                     <a href="/auth/signup" className="text-blue-400 hover:underline">
                         Criar conta
