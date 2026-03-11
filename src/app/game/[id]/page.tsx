@@ -1,19 +1,21 @@
 import { notFound } from 'next/navigation';
 import { mockGames } from '@/lib/games';
 
-// Define o tipo esperado para os parâmetros da rota.
-// Como a pasta se chama [id], o Next envia params.id.
 type GamePageProps = {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 };
 
-export default function GamePage({ params }: GamePageProps) {
-    // Procura no array de jogos um item com id igual ao da URL.
-    const game = mockGames.find((item) => item.id === params.id);
+export default async function GamePage({ params }: GamePageProps) {
+    // No Next.js 15/16, params é Promise.
+    // Então primeiro precisamos esperar ele resolver.
+    const { id } = await params;
 
-    // Se não encontrar o jogo, mostramos a página 404 do Next.js.
+    // Agora sim podemos procurar o jogo pelo id vindo da URL.
+    const game = mockGames.find((item) => item.id === id);
+
+    // Se não achar, mostramos a 404 padrão do Next.
     if (!game) {
         notFound();
     }
