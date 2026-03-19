@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import type { Game } from '@/lib/games';
@@ -9,6 +9,7 @@ type Message = {
     id: number;
     username: string;
     content: string;
+    createdAt: string;
 };
 
 type GameRoomClientProps = {
@@ -18,36 +19,51 @@ type GameRoomClientProps = {
 export default function GameRoomClient({ game }: GameRoomClientProps) {
     const { data: session, status } = useSession();
 
-    // Estado local para controlar o "início" do jogo visualmente.
-    const [isPlaying, setIsPlaying] = useState(false);
+    // Como entrar na página já significa entrar na sala,
+    // o jogo já começa em estado iniciado.
+    const [isPlaying] = useState(true);
 
-    // Estado local do campo de mensagem.
+    // Contador local da sala.
+    const [playersCount, setPlayersCount] = useState(game.playersOnline);
+
+    // Campo do chat.
     const [messageInput, setMessageInput] = useState('');
 
-    // Mensagens mockadas só para montar a interface.
+    // Mensagens locais mockadas.
     const [messages, setMessages] = useState<Message[]>([
-        { id: 1, username: 'retrofan', content: 'Esse jogo é clássico demais.' },
-        { id: 2, username: 'speedrunner', content: 'Quero zerar isso em tempo recorde.' },
-        { id: 3, username: 'gba_player', content: 'O layout do SocialRom está ficando massa.' },
+        {
+            id: 1,
+            username: 'retrofan',
+            content: 'Esse jogo é clássico demais.',
+            createdAt: 'agora',
+        },
+        {
+            id: 2,
+            username: 'speedrunner',
+            content: 'Quero zerar isso em tempo recorde.',
+            createdAt: 'agora',
+        },
     ]);
 
-    function handleStartGame() {
-        setIsPlaying(true);
-    }
+    const currentUsername = useMemo(() => {
+        return session?.user?.name || 'user';
+    }, [session]);
+
+    useEffect(() => {
+        setPlayersCount((prev) => prev + 1);
+    }, []);
 
     function handleSendMessage(e: React.FormEvent) {
         e.preventDefault();
 
-        // Se não tiver sessão, não deixa enviar.
         if (!session?.user) return;
-
-        // Se a mensagem estiver vazia, não faz nada.
         if (!messageInput.trim()) return;
 
         const newMessage: Message = {
             id: Date.now(),
-            username: session.user.name || 'user',
+            username: currentUsername,
             content: messageInput.trim(),
+            createdAt: 'agora',
         };
 
         setMessages((prev) => [...prev, newMessage]);
@@ -75,38 +91,20 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             </p>
                         </div>
 
-                        <div className="flex h-[420px] items-center justify-center rounded-lg border border-gray-700 bg-gray-950">
-                            {!isPlaying ? (
+                        <div className="flex h-[492px] items-center justify-center rounded-lg border border-gray-700 bg-gray-950">
+                            {isPlaying && (
                                 <div className="text-center">
-                                    <p className="text-lg font-semibold">Área do emulador</p>
-                                    <p className="mt-2 text-sm text-gray-400">
-                                        Aqui vamos conectar o emulador depois.
+                                    <p className="text-xl font-bold text-green-400">
+                                        Jogo iniciado
                                     </p>
-                                </div>
-                            ) : (
-                                <div className="text-center">
-                                    <p className="text-xl font-bold text-green-400">Jogo iniciado</p>
                                     <p className="mt-2 text-sm text-gray-300">
-                                        Mais adiante esta área vai renderizar o emulador real.
+                                        Você entrou na sala e o jogo já começou automaticamente.
+                                    </p>
+                                    <p className="mt-4 text-xs text-gray-500">
+                                        Depois vamos conectar o emulador real aqui.
                                     </p>
                                 </div>
                             )}
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-between rounded-lg bg-gray-800 px-4 py-3">
-                            <div>
-                                <p className="text-sm text-gray-400">Jogadores agora</p>
-                                <p className="text-xl font-bold text-green-400">
-                                    {game.playersOnline}
-                                </p>
-                            </div>
-
-                            <button
-                                onClick={handleStartGame}
-                                className="rounded-full bg-blue-600 px-5 py-2 font-semibold hover:bg-blue-700"
-                            >
-                                {isPlaying ? 'Jogando...' : 'Iniciar jogo'}
-                            </button>
                         </div>
                     </section>
 
@@ -114,23 +112,29 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                         <div className="border-b border-gray-800 pb-4">
                             <h2 className="text-xl font-bold">Chat da sala</h2>
                             <p className="mt-1 text-sm text-gray-400">
-                                Converse com quem está jogando este título agora.
+                                Ao abrir esta página, você já entra na sala deste jogo.
                             </p>
                         </div>
 
                         <div className="mt-4 rounded-lg bg-gray-800 px-4 py-3">
-                            <p className="text-sm text-gray-400">Pessoas nesta sala</p>
+                            <p className="text-sm text-gray-400">Pessoas na sala</p>
                             <p className="text-2xl font-bold text-green-400">
-                                {game.playersOnline}
+                                {playersCount}
                             </p>
                         </div>
 
                         <div className="mt-4 flex-1 space-y-3 overflow-y-auto rounded-lg bg-gray-950 p-3">
                             {messages.map((message) => (
                                 <div key={message.id} className="rounded-lg bg-gray-800 p-3">
-                                    <p className="text-sm font-semibold text-blue-400">
-                                        @{message.username}
-                                    </p>
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-blue-400">
+                                            @{message.username}
+                                        </p>
+                                        <span className="text-xs text-gray-500">
+                                            {message.createdAt}
+                                        </span>
+                                    </div>
+
                                     <p className="mt-1 text-sm text-gray-200">
                                         {message.content}
                                     </p>
@@ -160,10 +164,11 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             <form onSubmit={handleSendMessage} className="mt-4 space-y-3">
                                 <textarea
                                     className="min-h-[90px] w-full rounded-lg border border-gray-700 bg-gray-800 p-3 text-sm outline-none focus:border-blue-500"
-                                    placeholder={`Comentar como @${session.user.name}...`}
+                                    placeholder={`Comentar como @${currentUsername}...`}
                                     value={messageInput}
                                     onChange={(e) => setMessageInput(e.target.value)}
                                 />
+
                                 <button
                                     type="submit"
                                     className="w-full rounded-lg bg-green-600 py-2 font-semibold hover:bg-green-700"
