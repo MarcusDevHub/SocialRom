@@ -23,9 +23,6 @@ export default function AuthHeader() {
         <header className="mb-6 flex items-center justify-between">
             <div>
                 <h2 className="text-lg font-semibold text-white">SocialRom</h2>
-                <p className="text-sm text-gray-400">
-                    Jogue clássicos online com sala ao vivo
-                </p>
             </div>
 
             {!session?.user ? (

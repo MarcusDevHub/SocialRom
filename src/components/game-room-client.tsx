@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import type { Game } from '@/lib/games';
+import { useRoomSocket } from '@/hooks/use-room-socket';
+
 
 type Message = {
     id: number;
@@ -19,12 +21,10 @@ type GameRoomClientProps = {
 export default function GameRoomClient({ game }: GameRoomClientProps) {
     const { data: session, status } = useSession();
 
-    // Como entrar na página já significa entrar na sala,
-    // o jogo já começa em estado iniciado.
-    const [isPlaying] = useState(true);
+    const { roomCount, isConnected } = useRoomSocket(game.id);
 
-    // Contador local da sala.
-    const [playersCount, setPlayersCount] = useState(game.playersOnline);
+
+    const [isPlaying] = useState(true);
 
     // Campo do chat.
     const [messageInput, setMessageInput] = useState('');
@@ -49,9 +49,6 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
         return session?.user?.name || 'user';
     }, [session]);
 
-    useEffect(() => {
-        setPlayersCount((prev) => prev + 1);
-    }, []);
 
     function handleSendMessage(e: React.FormEvent) {
         e.preventDefault();
@@ -91,6 +88,11 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             </p>
                         </div>
 
+                        <p className="mt-2 text-xs text-gray-500">
+                            Status da sala: {isConnected ? 'conectado em tempo real' : 'conectando...'}
+                        </p>
+
+
                         <div className="flex h-[492px] items-center justify-center rounded-lg border border-gray-700 bg-gray-950">
                             {isPlaying && (
                                 <div className="text-center">
@@ -119,7 +121,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                         <div className="mt-4 rounded-lg bg-gray-800 px-4 py-3">
                             <p className="text-sm text-gray-400">Pessoas na sala</p>
                             <p className="text-2xl font-bold text-green-400">
-                                {playersCount}
+                                {roomCount}
                             </p>
                         </div>
 

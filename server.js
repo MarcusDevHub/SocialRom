@@ -67,6 +67,21 @@ app.prepare().then(() => {
         socket.on('disconnect', () => {
             console.log('Cliente desconectado:', socket.id);
         });
+        // Mensagens de chat por sala
+        socket.on('chat-message', ({ roomId, username, content }) => {
+            if (!roomId || !content) return;
+
+            const payload = {
+                id: Date.now(),
+                username,
+                content,
+                createdAt: new Date().toISOString(),
+            };
+
+            // Envia a mensagem para todo mundo na sala desse jogo
+            io.to(roomId).emit('chat-message', payload);
+            console.log(`Mensagem em ${roomId} de ${username}: ${content}`);
+        });
     });
 
     httpServer.listen(port, () => {
