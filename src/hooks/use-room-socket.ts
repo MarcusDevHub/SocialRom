@@ -7,6 +7,7 @@ type UseRoomSocketResult = {
     socket: Socket | null;
     roomCount: number;
     isConnected: boolean;
+    sendMessage: (data: { roomId: string; username: string; content: string }) => void;
 };
 
 export function useRoomSocket(roomId: string): UseRoomSocketResult {
@@ -44,9 +45,17 @@ export function useRoomSocket(roomId: string): UseRoomSocketResult {
         };
     }, [roomId]);
 
+    function sendMessage(data: { roomId: string; username: string; content: string }) {
+        if (!socketRef.current) return;
+        if (!data.content.trim()) return;
+
+        socketRef.current.emit('chat-message', data);
+    }
+
     return {
         socket: socketRef.current,
         roomCount,
         isConnected,
+        sendMessage,
     };
 }
