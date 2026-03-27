@@ -1,16 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+/* ---------- TEMA GLOBAL ---------- */
+@theme {
+  --text-px16: 16px;
+  --text-px32: 32px;
+  --text-px48: 48px;
+  --text-px64: 64px;
+  --text-px80: 80px;
+  --text-px96: 96px;
+
+
+  /* Paleta arcade */
+  --color-bg-main: #020617;
+  /* fundo quase preto */
+  --color-bg-soft: #050814;
+  /* usado em cards/barras */
+  --color-accent-yellow: #f9e65c;
+  /* SocialRom */
+  --color-accent-blue: #1f6bff;
+  /* botões */
+  --color-accent-green: #00ff7f;
+  /* status / terminal */
+  --color-text-primary: #e5e7eb;
+  --color-text-secondary: #a5b0ff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+@font-face {
+  font-family: 'BoldsPixels';
+  src: url('/fonts/BoldsPixels.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
+
+
+html,
+body {
+  font-family: 'BoldsPixels', Tahoma, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -19,20 +52,17 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
 
 /* Scrollbar mais discreta para containers de chat */
 .chat-scroll::-webkit-scrollbar {
   width: 6px;
 }
 
+
 .chat-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
+
 
 .chat-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(156, 163, 175, 0.3);
@@ -40,7 +70,286 @@ body {
   border-radius: 999px;
 }
 
+
 .chat-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+
+.text-sm {
+  font-size: 16px;
+}
+
+
+.text-xs {
+  font-size: 16px;
+}
+
+
+.body-crt {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+
+/* grade RGB + scanlines + gradiente central */
+.body-crt::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    /* scanlines horizontais */
+    linear-gradient(rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.55) 50%),
+    /* grade vertical RGB bem suave */
+    linear-gradient(90deg,
+      rgba(255, 0, 0, 0.08),
+      rgba(0, 255, 0, 0.04),
+      rgba(0, 0, 255, 0.08)),
+    /* gradiente de fundo azul/púrpura no centro */
+    radial-gradient(circle at top, #111827 0%, #020617 55%, #000000 100%);
+  background-size:
+    100% 3px,
+    /* espaçamento das linhas */
+    4px 100%,
+    /* largura das colunas RGB */
+    100% 100%;
+  mix-blend-mode: soft-light;
+  opacity: 0.75;
+  z-index: 0;
+}
+
+
+/* vinheta nas bordas */
+.body-crt::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 60%,
+      rgba(0, 0, 0, 0.9) 100%);
+  z-index: 1;
+}
+
+
+/* conteúdo principal acima do efeito */
+.main-crt {
+  position: relative;
+  z-index: 2;
+}
+
+
+.crt-frame {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  border-radius: 32px;
+  background: radial-gradient(circle at top, #050814 0%, #020617 80%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.9),
+    0 0 24px rgba(31, 107, 255, 0.25);
+}
+
+
+/* ============================================
+   EXPANDIBLE ARCADE/CRT GAME CARDS
+   Baseado no design de Fatih YILDIZ, adaptado para tema arcade
+   ============================================ */
+
+/* Container do grid de cards */
+.game-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  perspective: 1200px;
+  position: relative;
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 12px;
+  background: rgba(5, 8, 20, 0.5);
+}
+
+/* Card individual - base */
+.game-card {
+  position: relative;
+  flex: 1 1 calc(20% - 12px);
+  min-width: 120px;
+  height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: flex 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 400ms ease;
+  border: 2px solid rgba(249, 230, 92, 0.2);
+}
+
+/* Imagem do card */
+.game-card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.1);
+  transition: filter 400ms ease, transform 400ms ease;
+}
+
+/* Overlay gradient + cor de fundo */
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(31, 107, 255, 0.3) 0%,
+      rgba(0, 0, 0, 0.7) 100%);
+  z-index: 2;
+  transition: background 400ms ease;
+}
+
+/* Container para o conteúdo do card */
+.game-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 3;
+  background: linear-gradient(to top,
+      rgba(5, 8, 20, 0.95) 0%,
+      rgba(5, 8, 20, 0.7) 40%,
+      transparent 100%);
+  transform: translateY(50px);
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Título do card */
+.game-card-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-accent-yellow);
+  text-shadow: 0 0 8px rgba(249, 230, 92, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sistema (SNES, Genesis, etc) */
+.game-card-system {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  font-family: ui-monospace, monospace;
+}
+
+/* Status de players online */
+.game-card-status {
+  font-size: 11px;
+  color: var(--color-accent-green);
+  text-shadow: 0 0 6px rgba(0, 255, 127, 0.6);
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-card-status::before {
+  content: "◆";
+  display: inline-block;
+}
+
+/* HOVER STATE - Card se expande */
+.game-card:hover {
+  flex: 1 1 calc(40% - 12px);
+  box-shadow:
+    0 0 0 1px rgba(249, 230, 92, 0.4),
+    0 0 32px rgba(31, 107, 255, 0.5),
+    0 0 32px rgba(0, 255, 127, 0.2);
+}
+
+/* Ao hover, a imagem fica em cores */
+.game-card:hover img {
+  filter: grayscale(0%) contrast(1.15) brightness(1.1);
+  transform: scale(1.05);
+}
+
+/* Ao hover, o conteúdo desliza para cima */
+.game-card:hover .game-card-content {
+  transform: translateY(0);
+}
+
+/* Ao hover, overlay fica mais transparente */
+.game-card:hover::before {
+  background: linear-gradient(135deg,
+      rgba(31, 107, 255, 0.15) 0%,
+      rgba(0, 255, 127, 0.1) 100%);
+}
+
+/* RESPONSIVO */
+@media (max-width: 1024px) {
+  .game-card {
+    flex: 1 1 calc(25% - 12px);
+  }
+
+  .game-card:hover {
+    flex: 1 1 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 768px) {
+  .game-cards-container {
+    max-height: 350px;
+  }
+
+  .game-card {
+    flex: 1 1 calc(33.333% - 12px);
+    height: 280px;
+  }
+
+  .game-card:hover {
+    flex: 1 1 calc(66.666% - 12px);
+  }
+}
+
+@media (max-width: 512px) {
+  .game-cards-container {
+    max-height: 280px;
+  }
+
+  .game-card {
+    flex: 1 1 calc(50% - 12px);
+    height: 240px;
+  }
+
+  .game-card:hover {
+    flex: 1 1 100%;
+  }
+
+  .game-card-title {
+    font-size: 16px;
+  }
+}
+
+/* Suporte para reduzir movimento (acessibilidade) */
+@media (prefers-reduced-motion: reduce) {
+
+  .game-card,
+  .game-card img,
+  .game-card-content {
+    transition: none;
+  }
 }

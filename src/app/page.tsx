@@ -1,58 +1,70 @@
+'use client';
+
 import AuthHeader from '@/components/auth-header';
 import { mockGames } from '@/lib/games';
 import Link from 'next/link';
+import { useLocale } from '@/context/locale-context';
 
 export default function Home() {
+  const { locale } = useLocale();
+
+  const t = {
+    pt: {
+      title: 'SocialRom',
+      subtitle: 'Jogue e converse com outros jogadores em tempo real',
+      playingNow: 'jogando agora',
+      play: 'Jogar',
+    },
+    en: {
+      title: 'SocialRom',
+      subtitle: 'Play and chat with other players in real time',
+      playingNow: 'playing now',
+      play: 'Play',
+    },
+  }[locale];
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black p-8 text-white">
-      <header className="flex justify-end mb-4">
-        <a
-          href="/auth/signin"
-          className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold"
-        >
-          Entrar / Criar conta
-        </a>
-      </header>
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen px-4 py-10 text-[--color-text-primary]">
+      <div className="crt-frame">
         <AuthHeader />
 
-        <h1 className="mb-8 text-center text-4xl font-bold">
-          SocialROM - Jogue Nostalgia Online
-        </h1>
+        {/* Título SocialRom com vibe neon */}
+        <div className="mb-10 text-center">
+          <h1 className="text-5xl font-bold text-[--color-accent-yellow] drop-shadow-[0_0_14px_rgba(249,230,92,0.95)]">
+            {t.title}
+          </h1>
+          <p className="mt-3 text-sm text-[--color-text-secondary]">
+            {t.subtitle}
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Cards com estilo expandível arcade */}
+        <div className="game-cards-container">
           {mockGames.map((game) => (
-            <div
-              key={game.id}
-              className="group cursor-pointer rounded-lg bg-gray-800 p-6 shadow-xl transition-all hover:shadow-2xl"
-            >
+            <article key={game.id} className="game-card">
               <img
                 src={game.thumbnail}
                 alt={game.title}
-                className="mb-4 h-48 w-full rounded object-cover transition-transform group-hover:scale-105"
               />
 
-              <h2 className="mb-2 text-2xl font-bold">{game.title}</h2>
-              <p className="mb-4 text-sm text-gray-400">{game.system}</p>
-
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-green-400">
-                  {game.playersOnline} jogando agora
-                </span>
-
-                <Link
-                  href={`/game/${game.id}`}
-                  className="rounded-full bg-blue-600 px-6 py-2 font-semibold transition-colors hover:bg-blue-700"
-                >
-                  Jogar
-                </Link>
+              <div className="game-card-content">
+                <h2 className="game-card-title">{game.title}</h2>
+                <p className="game-card-system">{game.system}</p>
+                <p className="game-card-status">
+                  {String(game.playersOnline).padStart(2, '0')} {t.playingNow.toUpperCase()}
+                </p>
               </div>
-            </div>
+            </article>
           ))}
+        </div>
+
+        {/* Botão de play (opcional, fora dos cards) */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-[--color-text-secondary] uppercase tracking-widest">
+            ✦ HOVER NOS CARDS PARA EXPANDIR ✦
+          </p>
         </div>
       </div>
     </main>
   );
 }
-
-
