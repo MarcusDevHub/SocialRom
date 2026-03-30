@@ -46,5 +46,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+/public/roms
+/public/thumbs
 
 /src/generated/prisma

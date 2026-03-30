@@ -6,17 +6,36 @@ const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 
-// Inicializa o app Next
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
+// ⭐ ADICIONE AQUI TODOS OS IDs DOS SEUS JOGOS
+// Copie exatamente como estão no seu lib/games.ts
+const ALL_GAME_IDS = [
+    'super-mario-world',  // ← era 'super-mario-bros'
+    'pokemon-emerald',    // ← era 'pokemon-red'
+    'zelda-lttp',         // ← era 'zelda-link-awakens'
+];
+
+// Função auxiliar para contar usuários em uma room
+function countInRoom(io, roomId) {
+    return io.of('/').adapter.rooms.get(roomId)?.size || 0;
+}
+
+// Função para obter contagens de TODOS os jogos
+function getAllGamesCounts(io) {
+    const counts = {};
+    for (const gameId of ALL_GAME_IDS) {
+        counts[gameId] = countInRoom(io, gameId);
+    }
+    return counts;
+}
+
 app.prepare().then(() => {
-    // Criamos um servidor HTTP normal
     const httpServer = createServer((req, res) => {
         handle(req, res);
     });
 
-    // Plugamos o Socket.IO nesse mesmo servidor HTTP
     const io = new Server(httpServer, {
         cors: {
             origin: `http://${hostname}:${port}`,
@@ -27,15 +46,27 @@ app.prepare().then(() => {
     io.on('connection', (socket) => {
         console.log('Cliente conectado:', socket.id);
 
+        // ⭐ NOVO: Cliente pede contagens de todos os jogos
+        socket.on('get-all-games-counts', () => {
+            const counts = getAllGamesCounts(io);
+            socket.emit('games-counts-init', counts);
+            console.log('Enviando contagens iniciais:', counts);
+        });
+
         // Quando o cliente entra numa sala de jogo
         socket.on('join-room', (roomId) => {
             socket.join(roomId);
 
-            // Conta quantas conexões existem nessa room
-            const roomSize = io.of('/').adapter.rooms.get(roomId)?.size || 0;
+            const roomSize = countInRoom(io, roomId);
 
             // Envia para todos da sala o total atualizado
             io.to(roomId).emit('room-count', roomSize);
+
+            // ⭐ NOVO: Notifica todos os clientes sobre a atualização
+            io.emit('games-counts-update', {
+                gameId: roomId,
+                count: roomSize,
+            });
 
             console.log(`${socket.id} entrou na sala ${roomId}. Total: ${roomSize}`);
         });
@@ -44,20 +75,32 @@ app.prepare().then(() => {
         socket.on('leave-room', (roomId) => {
             socket.leave(roomId);
 
-            const roomSize = io.of('/').adapter.rooms.get(roomId)?.size || 0;
+            const roomSize = countInRoom(io, roomId);
             io.to(roomId).emit('room-count', roomSize);
+
+            // ⭐ NOVO: Notifica sobre a atualização
+            io.emit('games-counts-update', {
+                gameId: roomId,
+                count: roomSize,
+            });
 
             console.log(`${socket.id} saiu da sala ${roomId}. Total: ${roomSize}`);
         });
 
-        // Quando a conexão cai, o Socket.IO remove o socket das rooms.
-        // Esperamos o próximo tick para contar a room atualizada.
+        // Quando a conexão cai
         socket.on('disconnecting', () => {
             for (const roomId of socket.rooms) {
                 if (roomId !== socket.id) {
                     setTimeout(() => {
-                        const roomSize = io.of('/').adapter.rooms.get(roomId)?.size || 0;
+                        const roomSize = countInRoom(io, roomId);
                         io.to(roomId).emit('room-count', roomSize);
+
+                        // ⭐ NOVO: Notifica sobre a atualização
+                        io.emit('games-counts-update', {
+                            gameId: roomId,
+                            count: roomSize,
+                        });
+
                         console.log(`Sala ${roomId} após disconnect: ${roomSize}`);
                     }, 0);
                 }
@@ -67,6 +110,7 @@ app.prepare().then(() => {
         socket.on('disconnect', () => {
             console.log('Cliente desconectado:', socket.id);
         });
+
         // Mensagens de chat por sala
         socket.on('chat-message', ({ roomId, username, content }) => {
             if (!roomId || !content) return;
@@ -78,7 +122,6 @@ app.prepare().then(() => {
                 createdAt: new Date().toISOString(),
             };
 
-            // Envia a mensagem para todo mundo na sala desse jogo
             io.to(roomId).emit('chat-message', payload);
             console.log(`Mensagem em ${roomId} de ${username}: ${content}`);
         });

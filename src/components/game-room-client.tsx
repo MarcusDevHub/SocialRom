@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import type { Game } from '@/lib/games';
 import { useRoomSocket } from '@/hooks/use-room-socket';
+import { EmulatorPlayer } from '@/components/emulatorPlayer';
+
 
 type Message = {
     id: number;
@@ -197,17 +199,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
 
                         <div className="flex h-[492px] items-center justify-center rounded-lg border border-gray-700 bg-gray-950">
                             {isPlaying && (
-                                <div className="text-center">
-                                    <p className="text-xl font-bold text-green-400">
-                                        Jogo iniciado
-                                    </p>
-                                    <p className="mt-2 text-sm text-gray-300">
-                                        Você entrou na sala e o jogo já começou automaticamente.
-                                    </p>
-                                    <p className="mt-4 text-xs text-gray-500">
-                                        Depois vamos conectar o emulador real aqui.
-                                    </p>
-                                </div>
+                                <EmulatorPlayer romUrl={game.romUrl} system={game.system} />
                             )}
                         </div>
                     </section>

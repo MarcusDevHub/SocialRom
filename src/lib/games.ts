@@ -24,7 +24,7 @@ export const mockGames: Game[] = [
         id: 'pokemon-emerald',
         title: 'Pokémon Emerald',
         system: 'GBA',
-        romUrl: '/roms/poke.gba',
+        romUrl: '/roms/Pokemon - Emerald Version (USA, Europe).gba',
         thumbnail: '/thumbs/poke.jpg',
         playersOnline: 0,
         description: 'RPG clássico de Pokémon no Game Boy Advance.',

@@ -2,11 +2,13 @@
 
 import AuthHeader from '@/components/auth-header';
 import { mockGames } from '@/lib/games';
+import { useGamesRoomCounts } from '@/hooks/use-games-room-counts';
 import Link from 'next/link';
 import { useLocale } from '@/context/locale-context';
 
 export default function Home() {
   const { locale } = useLocale();
+  const { playersByGame } = useGamesRoomCounts();
 
   const t = {
     pt: {
@@ -30,39 +32,37 @@ export default function Home() {
 
         {/* Título SocialRom com vibe neon */}
         <div className="mb-10 text-center">
-          <h1 className="text-5xl font-bold text-[--color-accent-yellow] drop-shadow-[0_0_14px_rgba(249,230,92,0.95)]">
+          <h1 className="text-5xl font-bold text-yellow-400 drop-shadow-[0_0_8px_rgba(255,255,150,0.8)]">
             {t.title}
           </h1>
-          <p className="mt-3 text-sm text-[--color-text-secondary]">
+          <p className="mt-3 text-sm text-gray-400 opacity-90">
             {t.subtitle}
           </p>
         </div>
 
-        {/* Cards com estilo expandível arcade */}
+        {/* Cards com estilo expandível TIPO CODEPEN */}
         <div className="game-cards-container">
           {mockGames.map((game) => (
-            <article key={game.id} className="game-card">
+            <Link
+              key={game.id}
+              href={`/game/${game.id}`}
+              className="game-card"
+            >
               <img
                 src={game.thumbnail}
                 alt={game.title}
+                className="game-card-image"
               />
 
               <div className="game-card-content">
                 <h2 className="game-card-title">{game.title}</h2>
                 <p className="game-card-system">{game.system}</p>
                 <p className="game-card-status">
-                  {String(game.playersOnline).padStart(2, '0')} {t.playingNow.toUpperCase()}
+                  {String(playersByGame[game.id] ?? 0)} {t.playingNow.toUpperCase()}
                 </p>
               </div>
-            </article>
+            </Link>
           ))}
-        </div>
-
-        {/* Botão de play (opcional, fora dos cards) */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-[--color-text-secondary] uppercase tracking-widest">
-            ✦ HOVER NOS CARDS PARA EXPANDIR ✦
-          </p>
         </div>
       </div>
     </main>
