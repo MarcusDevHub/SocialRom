@@ -35,6 +35,14 @@ export const mockGames: Game[] = [
         playersOnline: 0,
     },
     {
+        id: 'pokemon-lazarus',
+        title: 'Pokémon Lazarus',
+        system: 'GBA',
+        romUrl: '/roms/Pokemon Lazarus v2.0.gba',
+        thumbnail: '/thumbs/lazarus.jpg',
+        playersOnline: 0,
+    },
+    {
         id: 'earthbound',
         title: 'Earthbound',
         system: 'SNES',

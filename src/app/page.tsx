@@ -14,13 +14,9 @@ export default function Home() {
 
   const t = {
     pt: {
-      title: 'SocialRom',
-      subtitle: 'Jogue e converse com outros jogadores em tempo real',
-      playingNow: 'jogando agora',
+      playingNow: 'jogando agora'
     },
     en: {
-      title: 'SocialRom',
-      subtitle: 'Play and chat with other players in real time',
       playingNow: 'playing now',
     },
   }[locale];
@@ -37,9 +33,82 @@ export default function Home() {
   }, []);
 
   const subtitles = [
-    'Jogue e converse com outros jogadores em tempo real',
-    'Play and chat with other players in real time',
-    'papito'
+    'speedrunning my mental breakdown',
+    'nobody: / me at 3am: *loads game*',
+    'certified hood classic',
+    'The real final boss was the loading screens',
+    'just built different fr fr',
+    'my sleep schedule is a war crime',
+    '404: Skill not found',
+    'killing it in single player since 2009',
+    'Main character syndrome activated',
+    'Wololo',
+    '"Skill issue" – Sun Tzu, The Art of War',
+    'I should have been the one to fill your dark soul with LIIIGHT!',
+    'You just lost The Game',
+    'heh, nothing personnel, kid',
+    'I am thou, thou art I',
+    'Pain.',
+    'bro has a gamer chair and no friends. respect.',
+    'the grind never stops (I literally cannot stop)',
+    'day 1 patch victim',
+    'patch notes jumpscare',
+    'this boss has another phase???',
+    'I parried that in my head',
+    'cutscene diff',
+    'the tutorial was the peak',
+    'lore accurate ragequit',
+    'enemy team paid actors',
+    'skill issue',
+    'touch grass',
+    'cope + seethe',
+    'desk slam any%',
+    'report jungler',
+    'top lane incident',
+    'enemy team paid actors',
+    'my aim is on vacation',
+    'cutscene diff',
+    'lore accurate ragequit',
+    'patch notes jumpscare',
+    'this wipe is personal',
+    'queue again',
+    'blame the healer',
+    'he\'s one shot',
+    'lag killed me',
+    'NPC behavior',
+    'bro is NOT him',
+    'no thoughts, only respawn',
+    'ranked ruined my personality',
+    'mental stack collapsed',
+    'parried it in my head',
+    'the grind consumed me',
+    'respawn and deny everything',
+    'another easy uninstall angle',
+    'just one more run',
+    'my build came to me in a dream',
+    'gamer posture, goblin hours',
+    '404: skill not found',
+    'the tutorial was the peak',
+    'Wololo',
+    'Ramirez, do everything!',
+    'What a save!',
+    'speedrunning my breakdown',
+    'my sleep schedule is a side quest',
+    'the real boss was the camera',
+    'farming simulator but it\'s ranked',
+    'I can fix my aim tomorrow',
+    'main character syndrome activated',
+    'certified respawn moment',
+    'bro really whiffed that',
+    'we are so back',
+    'we are so cooked',
+    'loading screen final boss',
+    'mission failed successfully',
+    'pain.',
+    'queued up, immediately regretted it',
+    'all aim, no brain',
+    'one more match, surely',
+    'this boss has another phase???'
   ];
 
   const newSubtitles = subtitles[Math.floor(Math.random() * subtitles.length)];
@@ -66,11 +135,10 @@ export default function Home() {
 
           <section className="mb-10 text-center" data-shape-mask>
             <h1 className="mb-3 text-px64 text-[var(--color-accent-yellow)] drop-shadow-[0_0_18px_rgba(249,230,92,0.55)] md:text-px80">
-              {t.title}
+              SocialRom
             </h1>
 
             <p className="flicker-subtitle mx-auto max-w-2xl text-px16 text-[var(--color-text-secondary)]">
-              {t.subtitle}
             </p>
           </section>
 

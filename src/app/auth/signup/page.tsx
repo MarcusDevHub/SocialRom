@@ -50,12 +50,12 @@ export default function SignUpPage() {
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-black text-white p-6">
-            <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-xl">
+            <div className="w-full max-w-[32rem] rounded-xl bg-gray-900 p-8 shadow-xl">
                 <h1 className="mb-6 text-3xl font-bold">Criar conta</h1>
 
                 {message && (
                     <div
-                        className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${messageType === 'success'
+                        className={`mb-4 rounded-lg px-4 py-3 text-s font-medium ${messageType === 'success'
                             ? 'bg-green-900/40 text-green-300 border border-green-700'
                             : 'bg-red-900/40 text-red-300 border border-red-700'
                             }`}
@@ -66,10 +66,10 @@ export default function SignUpPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="mb-1 block text-sm text-gray-300">Username</label>
+                        <label className="mb-1 block text-s text-gray-300">Username</label>
                         <input
                             type="text"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
+                            className="w-full rounded-lg text-[24px] border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
@@ -77,10 +77,10 @@ export default function SignUpPage() {
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm text-gray-300">Email</label>
+                        <label className="mb-1 block text-s text-gray-300">Email</label>
                         <input
                             type="email"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
+                            className="w-full rounded-lg text-[24px] border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -88,10 +88,10 @@ export default function SignUpPage() {
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm text-gray-300">Senha</label>
+                        <label className="mb-1 block text-s text-gray-300">Senha</label>
                         <input
                             type="password"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
+                            className="w-full rounded-lg text-[24px] border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -107,7 +107,7 @@ export default function SignUpPage() {
                     </button>
                 </form>
 
-                <p className="mt-4 text-sm text-gray-400">
+                <p className="mt-4 text-s text-gray-400">
                     Já tem conta?{' '}
                     <a href="/auth/signin" className="text-blue-400 hover:underline">
                         Entrar

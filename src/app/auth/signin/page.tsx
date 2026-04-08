@@ -29,15 +29,15 @@ export default function SignInPage() {
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-black text-white p-6">
-            <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-xl">
-                <h1 className="mb-6 text-3xl font-bold">Entrar no SocialRom</h1>
+            <div className="w-full max-w-[32rem] rounded-xl bg-gray-900 p-8 shadow-xl">
+                <h1 className="mb-6 text-3xl font-bold ">Entrar no SocialRom</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="mb-1 block text-sm text-gray-300">Email</label>
+                        <label className="mb-1 block text-s text-gray-300">Email</label>
                         <input
                             type="email"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
+                            className="w-full rounded-lg text-[24px] border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -45,10 +45,10 @@ export default function SignInPage() {
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm text-gray-300">Senha</label>
+                        <label className="mb-1 block text-s text-gray-300">Senha</label>
                         <input
                             type="password"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
+                            className="w-full rounded-lg text-[24px] border border-gray-700 bg-gray-800 px-3 py-2 outline-none focus:border-blue-500"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -63,7 +63,7 @@ export default function SignInPage() {
                     </button>
                 </form>
 
-                <p className="mt-4 text-sm text-gray-400">
+                <p className="mt-4 text-s text-gray-400">
                     Ainda não tem conta?{' '}
                     <a href="/auth/signup" className="text-blue-400 hover:underline">
                         Criar conta
