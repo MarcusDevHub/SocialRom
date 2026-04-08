@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { mockGames } from '@/lib/games';
 import GameRoomClient from '@/components/game-room-client';
-
+import ShapeWaveBackground from '@/components/shape-wave-background';
 
 type GamePageProps = {
     params: Promise<{
@@ -10,17 +10,22 @@ type GamePageProps = {
 };
 
 export default async function GamePage({ params }: GamePageProps) {
-    // No Next.js atual, params é Promise.
     const { id } = await params;
 
-    // Procuramos o jogo na lista mock.
     const game = mockGames.find((item) => item.id === id);
 
-    // Se não encontrar, mostramos a página 404.
     if (!game) {
         notFound();
     }
 
-    // Se encontrar, passamos o objeto inteiro para o componente client.
-    return <GameRoomClient game={game} />;
+    return (
+        <div className="body-crt-game">
+            <ShapeWaveBackground />
+            <div className="shape-wave-vignette" aria-hidden="true" />
+
+            <main className="main-crt game-page-root">
+                <GameRoomClient game={game} />
+            </main>
+        </div>
+    );
 }

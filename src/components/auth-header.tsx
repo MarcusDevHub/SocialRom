@@ -33,7 +33,9 @@ export default function AuthHeader() {
             {/* Logo + título */}
             <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-yellow-500/60 bg-black/40 shadow-[0_0_12px_rgba(0,0,0,0.8)]">
-                    <span className="text-px16 font-bold text-yellow-400">SR</span>
+                    <img
+                        src={'logoman.png'}
+                    />
                 </div>
             </div>
 

@@ -12,9 +12,16 @@ const handle = app.getRequestHandler();
 // ⭐ ADICIONE AQUI TODOS OS IDs DOS SEUS JOGOS
 // Copie exatamente como estão no seu lib/games.ts
 const ALL_GAME_IDS = [
-    'super-mario-world',  // ← era 'super-mario-bros'
-    'pokemon-emerald',    // ← era 'pokemon-red'
-    'zelda-lttp',         // ← era 'zelda-link-awakens'
+    'pokemon-emerald',
+    'zelda-lttp',
+    'earthbound',
+    'megaman-x',
+    'castle-Aria',
+    'pokemon-unbound',
+    'final-Fantasy-VI',
+    'super-Castlevania-IV',
+    'castlevania-sotn',
+    'jackie-Chan-Stuntmaster',
 ];
 
 // Função auxiliar para contar usuários em uma room

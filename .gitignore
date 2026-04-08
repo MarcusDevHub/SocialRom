@@ -42,11 +42,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+/src/lib/games.ts
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 /public/roms
 /public/thumbs
+/public/bios
 
 /src/generated/prisma

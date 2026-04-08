@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 /* ---------- TEMA GLOBAL ---------- */
 @theme {
   --text-px16: 16px;
@@ -10,22 +9,14 @@
   --text-px80: 80px;
   --text-px96: 96px;
 
-
-  /* Paleta arcade */
   --color-bg-main: #020617;
-  /* fundo quase preto */
   --color-bg-soft: #050814;
-  /* usado em cards/barras */
   --color-accent-yellow: #f9e65c;
-  /* SocialRom */
   --color-accent-blue: #1f6bff;
-  /* botões */
   --color-accent-green: #00ff7f;
-  /* status / terminal */
   --color-text-primary: #e5e7eb;
   --color-text-secondary: #a5b0ff;
 }
-
 
 @font-face {
   font-family: 'BoldsPixels';
@@ -35,7 +26,6 @@
   font-display: swap;
 }
 
-
 html,
 body {
   font-family: 'BoldsPixels', Tahoma, system-ui, -apple-system,
@@ -44,7 +34,6 @@ body {
   color: var(--color-text-primary);
 }
 
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -52,132 +41,125 @@ body {
   }
 }
 
-
-/* Scrollbar mais discreta para containers de chat */
+/* Scrollbar do chat */
 .chat-scroll::-webkit-scrollbar {
   width: 6px;
 }
-
 
 .chat-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-
 .chat-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(156, 163, 175, 0.3);
-  /* gray-400 com transparência */
   border-radius: 999px;
 }
-
 
 .chat-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
 }
 
-
-.text-sm {
-  font-size: 16px;
-}
-
-
-.text-xs {
-  font-size: 16px;
-}
-
-
+/* ---------- HOME ---------- */
 .body-crt {
   position: relative;
   min-height: 100vh;
-  background-color: var(--color-bg-main);
+  background: #05070b;
   color: var(--color-text-primary);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
+/* Na home o fundo vem do canvas, então desligamos os pseudo-elementos antigos */
+.body-crt::before,
+.body-crt::after {
+  content: none;
+}
 
-/* grade RGB + scanlines + gradiente central */
-.body-crt::before {
-  content: "";
+/* Canvas do Shape Wave */
+.shape-wave-canvas {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Vinheta leve por cima do canvas */
+.shape-wave-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
   pointer-events: none;
   background:
-    /* scanlines horizontais */
-    linear-gradient(rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.55) 50%),
-    /* grade vertical RGB bem suave */
-    linear-gradient(90deg,
-      rgba(255, 0, 0, 0.08),
-      rgba(0, 255, 0, 0.04),
-      rgba(0, 0, 255, 0.08)),
-    /* gradiente de fundo azul/púrpura no centro */
-    radial-gradient(circle at top, #111827 0%, #020617 55%, #000000 100%);
-  background-size:
-    100% 3px,
-    /* espaçamento das linhas */
-    4px 100%,
-    /* largura das colunas RGB */
-    100% 100%;
-  mix-blend-mode: soft-light;
-  opacity: 0.75;
-  z-index: 0;
-}
-
-
-/* vinheta nas bordas */
-.body-crt::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at center,
+    radial-gradient(circle at center,
       transparent 0%,
-      rgba(0, 0, 0, 0.3) 60%,
-      rgba(0, 0, 0, 0.9) 100%);
-  z-index: 1;
+      rgba(0, 0, 0, 0.18) 72%,
+      rgba(0, 0, 0, 0.62) 100%);
 }
 
-
-/* conteúdo principal acima do efeito */
 .main-crt {
   position: relative;
   z-index: 2;
+  padding-bottom: 40px;
 }
 
-
+/* O frame agora não desenha uma placa azul na frente */
 .crt-frame {
   max-width: 1200px;
   margin: 0 auto;
   padding: 32px 40px;
   border-radius: 32px;
-  background: radial-gradient(circle at top, #050814 0%, #020617 80%);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow:
-    0 0 40px rgba(0, 0, 0, 0.9),
-    0 0 24px rgba(31, 107, 255, 0.25);
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
+/* ---------- GAME PAGE ---------- */
+.body-crt-game {
+  position: relative;
+  min-height: 100vh;
+  background: #05070b;
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
 
-/* ============================================
-   EXPANDIBLE ARCADE/CRT GAME CARDS (ESTILO CODEPEN)
-   Cards lado a lado, sem gaps, se expandindo ao hover
-   ============================================ */
+.body-crt-game::before,
+.body-crt-game::after {
+  content: none;
+}
 
-/* Container do grid de cards - SEM GAPS */
+.game-page-root {
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* ---------- CARDS ---------- */
+.game-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+
 .game-cards-container {
   display: flex;
   flex-wrap: nowrap;
-  width: min(1170px, 80vw);
+  width: min(1170px, 100%);
   height: 400px;
   overflow: hidden;
   border-radius: 1rem;
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.18);
   white-space: nowrap;
   z-index: 2;
 }
 
-/* Card individual - Link base */
 .game-card {
   position: relative;
   flex: 1;
@@ -195,7 +177,6 @@ body {
   background: transparent;
 }
 
-/* Imagem do card - preenche tudo */
 .game-card-image {
   position: absolute;
   width: 100%;
@@ -205,7 +186,6 @@ body {
   transition: filter 500ms ease, transform 500ms ease;
 }
 
-/* Overlay gradient escuro */
 .game-card::before {
   content: "";
   position: absolute;
@@ -218,7 +198,6 @@ body {
   transition: background 500ms ease;
 }
 
-/* Container para o conteúdo do card */
 .game-card-content {
   position: relative;
   z-index: 3;
@@ -229,21 +208,20 @@ body {
   transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Título do card */
 .game-card-title {
   font-size: 20px;
   font-weight: bold;
   color: var(--color-accent-yellow);
-  text-shadow: 0 0 10px rgba(249, 230, 92, 0.9),
+  text-shadow:
+    0 0 10px rgba(249, 230, 92, 0.9),
     0 2px 6px rgba(0, 0, 0, 0.9);
   margin-bottom: 8px;
   letter-spacing: 0.05em;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
 }
 
-/* Sistema (SNES, Genesis, etc) */
 .game-card-system {
   font-size: 11px;
   color: var(--color-text-secondary);
@@ -255,7 +233,6 @@ body {
   transition: opacity 500ms ease 200ms;
 }
 
-/* Status de players online */
 .game-card-status {
   font-size: 12px;
   color: var(--color-accent-green);
@@ -275,20 +252,16 @@ body {
   color: var(--color-accent-green);
 }
 
-/* ===== HOVER STATE ===== */
-
-/* Card ao hover se expande */
 .game-card:hover {
   flex: 1.5;
+  box-shadow: inset 0 0 32px rgba(31, 107, 255, 0.4);
 }
 
-/* Imagem fica em cores e mais brilhante */
 .game-card:hover .game-card-image {
   filter: grayscale(0%) contrast(1.2) brightness(1);
   transform: scale(1.02);
 }
 
-/* Overlay mais suave */
 .game-card:hover::before {
   background: linear-gradient(180deg,
       rgba(0, 0, 0, 0) 0%,
@@ -296,13 +269,7 @@ body {
       rgba(5, 8, 20, 0.7) 100%);
 }
 
-/* Glow ao hover */
-.game-card:hover {
-  box-shadow: inset 0 0 32px rgba(31, 107, 255, 0.4);
-}
-
-/* ===== RESPONSIVO ===== */
-
+/* ---------- RESPONSIVO ---------- */
 @media (max-width: 1024px) {
   .game-cards-container {
     height: 350px;
@@ -329,6 +296,11 @@ body {
   .game-card-content {
     padding: 16px;
   }
+
+  .crt-frame {
+    padding: 20px 18px;
+    border-radius: 24px;
+  }
 }
 
 @media (max-width: 512px) {
@@ -345,7 +317,7 @@ body {
   }
 }
 
-/* Suporte para reduzir movimento */
+/* ---------- REDUZIR MOVIMENTO ---------- */
 @media (prefers-reduced-motion: reduce) {
 
   .game-card,
@@ -353,5 +325,74 @@ body {
   .game-card-system,
   .game-card-status {
     transition: none;
+  }
+
+  .shape-wave-canvas {
+    opacity: 0.6;
+  }
+}
+
+/* ---------- SCROLL HOME ---------- */
+.home-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 107, 255, 0.75) rgba(255, 255, 255, 0.06);
+}
+
+.home-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+
+.home-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.home-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,
+      rgba(31, 107, 255, 0.95) 0%,
+      rgba(0, 255, 127, 0.85) 100%);
+  border-radius: 999px;
+  border: 2px solid rgba(2, 6, 23, 0.9);
+  box-shadow:
+    0 0 10px rgba(31, 107, 255, 0.35),
+    0 0 18px rgba(0, 255, 127, 0.12);
+}
+
+.home-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,
+      rgba(74, 144, 255, 1) 0%,
+      rgba(0, 255, 127, 1) 100%);
+}
+
+.home-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.h-10,
+.w-10 {
+  height: 7rem;
+  width: 7rem;
+}
+
+.flicker-subtitle {
+  font-size: 21px;
+  padding: 1em;
+  color: #eee;
+  line-height: 1;
+  text-shadow: 0.06rem 0 0.06rem #ea36af, -0.125rem 0 0.06rem #75fa69;
+  letter-spacing: 0.125em;
+  animation-duration: 0.01s;
+  animation-name: textflicker;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes textflicker {
+  from {
+    text-shadow: 1px 0 0 #ea36af, -2px 0 0 #75fa69;
+  }
+
+  to {
+    text-shadow: 2px 0.5px 2px #ea36af, -1px -0.5px 2px #75fa69;
   }
 }
