@@ -76,7 +76,7 @@ export default function SignInPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="mb-1 block text-sm text-white/70">{t.email}</label>
+                            <label className="mb-1 block text-s text-white/70">{t.email}</label>
                             <input
                                 type="email"
                                 className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white outline-none backdrop-blur-sm transition focus:border-[var(--color-accent-blue)]"
@@ -87,7 +87,7 @@ export default function SignInPage() {
                         </div>
 
                         <div>
-                            <label className="mb-1 block text-sm text-white/70">{t.password}</label>
+                            <label className="mb-1 block text-s text-white/70">{t.password}</label>
                             <input
                                 type="password"
                                 className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white outline-none backdrop-blur-sm transition focus:border-[var(--color-accent-blue)]"
@@ -105,7 +105,7 @@ export default function SignInPage() {
                         </button>
                     </form>
 
-                    <p className="mt-4 text-sm text-white/50">
+                    <p className="mt-4 text-s text-white/50">
                         {t.noAccount}{' '}
                         <Link href="/auth/signup" className="text-[var(--color-accent-blue)] hover:text-[var(--color-accent-green)] hover:underline">
                             {t.createAccount}

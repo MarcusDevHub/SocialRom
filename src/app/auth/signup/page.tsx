@@ -103,7 +103,7 @@ export default function SignUpPage() {
 
                     {message && (
                         <div
-                            className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${messageType === 'success'
+                            className={`mb-4 rounded-lg px-4 py-3 text-s font-medium ${messageType === 'success'
                                 ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-700'
                                 : 'bg-red-900/40 text-red-300 border border-red-700'
                                 }`}
@@ -114,7 +114,7 @@ export default function SignUpPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="mb-1 block text-sm text-white/70">{t.username}</label>
+                            <label className="mb-1 block text-s text-white/70">{t.username}</label>
                             <input
                                 type="text"
                                 className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white outline-none backdrop-blur-sm transition focus:border-[var(--color-accent-blue)]"
@@ -125,7 +125,7 @@ export default function SignUpPage() {
                         </div>
 
                         <div>
-                            <label className="mb-1 block text-sm text-white/70">{t.email}</label>
+                            <label className="mb-1 block text-s text-white/70">{t.email}</label>
                             <input
                                 type="email"
                                 className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white outline-none backdrop-blur-sm transition focus:border-[var(--color-accent-blue)]"
@@ -136,7 +136,7 @@ export default function SignUpPage() {
                         </div>
 
                         <div>
-                            <label className="mb-1 block text-sm text-white/70">{t.password}</label>
+                            <label className="mb-1 block text-s text-white/70">{t.password}</label>
                             <input
                                 type="password"
                                 className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white outline-none backdrop-blur-sm transition focus:border-[var(--color-accent-blue)]"
@@ -155,7 +155,7 @@ export default function SignUpPage() {
                         </button>
                     </form>
 
-                    <p className="mt-4 text-sm text-white/50">
+                    <p className="mt-4 text-s text-white/50">
                         {t.hasAccount}{' '}
                         <Link href="/auth/signin" className="text-[var(--color-accent-blue)] hover:text-[var(--color-accent-green)] hover:underline">
                             {t.signIn}

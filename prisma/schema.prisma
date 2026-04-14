@@ -45,3 +45,13 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  username  String
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
+}

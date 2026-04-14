@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import type { Game } from '@/lib/games';
 import { useRoomSocket } from '@/hooks/use-room-socket';
@@ -106,6 +107,29 @@ function MessageCard({ message, timeTick }: MessageCardProps) {
 function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' }) {
     const controls = CONTROLS[system];
 
+    const saveInstructions = {
+        SNES: {
+            inGame: 'Use o sistema de save do próprio jogo.',
+            state: 'Shift + F1 para salvar / F1 para carregar.',
+            tip: null,
+        },
+        GBA: {
+            inGame: 'Use o sistema de save do próprio jogo.',
+            state: 'Shift + F1 para salvar / F1 para carregar.',
+            tip: null,
+        },
+        NES: {
+            inGame: 'Use o sistema de save do próprio jogo.',
+            state: 'Shift + F1 para salvar / F1 para carregar.',
+            tip: null,
+        },
+        PS1: {
+            inGame: 'Salve via Memory Card dentro do jogo.',
+            state: 'Shift + F1 para salvar / F1 para carregar.',
+            tip: 'Salve sempre antes de fechar — PS1 exige Memory Card!',
+        },
+    }[system];
+
     return (
         <section
             data-shape-mask
@@ -115,10 +139,6 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' }) {
                 Controles — {system}
             </h3>
 
-            <p className="mb-4 text-white/55">
-                Teclas atuais do teclado para este jogo.
-            </p>
-
             <div className="space-y-2">
                 {controls.map(({ label, key }) => (
                     <div
@@ -126,24 +146,52 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' }) {
                         className="flex items-center justify-between gap-3 rounded-lg border border-white/8 bg-black/20 px-3 py-2 backdrop-blur-sm"
                     >
                         <span className="text-white/60">{label}</span>
-                        <kbd className="rounded-md bg-white/10 px-2 py-1 font-mono text-white/85">
+                        <kbd className="rounded-md bg-white/10 px-2 font-mono text-white/85">
                             {key}
                         </kbd>
                     </div>
                 ))}
             </div>
 
-            <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 backdrop-blur-sm">
-                <p className="text-emerald-300">
-                    No celular, os controles aparecem direto no emulador como virtual gamepad.
-                </p>
+            {/* INSTRUÇÕES DE SAVE */}
+            <div className="mt-4 border-t border-white/10 pt-2">
+                <h4 className="mb-2 font-semibold uppercase tracking-widest text-white/40">
+                    Como Salvar
+                </h4>
+
+                <div className="space-y-2 text-s">
+                    <div className="flex items-start gap-2">
+                        <span className="shrink-0 text-emerald-400">▸</span>
+                        <p className="text-white/70">
+                            <span className="font-medium text-white/90">No jogo:</span>{' '}
+                            {saveInstructions.inGame}
+                        </p>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                        <span className="shrink-0 text-emerald-400">▸</span>
+                        <p className="text-white/70">
+                            <span className="font-medium text-white/90">Save State:</span>{' '}
+                            {saveInstructions.state}
+                        </p>
+                    </div>
+
+                    {saveInstructions.tip && (
+                        <div className="mt-2 flex items-start gap-2 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-2">
+                            <span className="shrink-0 text-yellow-400">⚠</span>
+                            <p className="text-yellow-300/90 text-[15px]">
+                                {saveInstructions.tip}
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
         </section>
     );
 }
 
 export default function GameRoomClient({ game }: GameRoomClientProps) {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const { roomCount, isConnected, sendMessage, socket } = useRoomSocket(game.id);
 
     const [messages, setMessages] = useState<Message[]>([]);
@@ -152,6 +200,10 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
     const [showEmulator] = useState(true);
 
     const chatScrollRef = useRef<HTMLDivElement | null>(null);
+
+
+    const [historicalMessages, setHistoricalMessages] = useState<Message[]>([]);
+    const [hasLoadedHistory, setHasLoadedHistory] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => setTimeTick((t) => t + 1), 30_000);
@@ -171,13 +223,6 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
             socket.off('chat-message', handleMessage);
         };
     }, [socket]);
-
-    useEffect(() => {
-        const container = chatScrollRef.current;
-        if (!container) return;
-
-        container.scrollTop = container.scrollHeight;
-    }, [messages]);
 
     const handleBackToLibrary = () => {
         window.location.href = '/';
@@ -199,20 +244,87 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
         };
     }, []);
 
+    const canSendMessage = Boolean(session?.user) && isConnected;
+
     function handleSendMessage(e: React.FormEvent) {
         e.preventDefault();
+        if (!canSendMessage) return;
         if (!inputValue.trim()) return;
-
-        const username = session?.user?.name ?? 'Anônimo';
 
         sendMessage({
             roomId: game.id,
-            username,
-            content: inputValue,
+            username: session!.user.name ?? 'Usuário',
+            content: inputValue.trim(),
         });
 
         setInputValue('');
     }
+
+    // Carrega histórico ao conectar
+    useEffect(() => {
+        if (!isConnected || hasLoadedHistory) {
+            console.log('Não carregando:', { isConnected, hasLoadedHistory });
+
+            return;
+        }
+
+        const loadHistory = async () => {
+            console.log('Carregando histórico room:', game.id);
+
+            try {
+                const res = await fetch(`/api/chat?roomId=${game.id}`);
+                console.log('Status:', res.status);
+
+                if (!res.ok) throw new Error('Falha ao carregar histórico');
+                const data = await res.json();
+                console.log('Dados:', data);
+                setHistoricalMessages(data.messages || []);
+                setHasLoadedHistory(true);
+            } catch (err) {
+                console.error('Erro ao carregar histórico:', err);
+            }
+        };
+
+        loadHistory();
+    }, [isConnected, game.id, hasLoadedHistory]);
+
+    // Envia + salva no histórico
+    const handleSendMessageWithHistory = useCallback(async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!canSendMessage) return;
+        if (!inputValue.trim()) return;
+
+        const username = session!.user.name ?? 'Usuário';
+        const content = inputValue.trim();
+
+        sendMessage({ roomId: game.id, username, content });
+
+        try {
+            await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roomId: game.id, username, content }),
+            });
+        } catch (err) {
+            console.error('Erro ao salvar no histórico:', err);
+        }
+
+        setInputValue('');
+    }, [canSendMessage, inputValue, sendMessage, game.id, session]);
+
+    // Combina histórico + tempo real
+    const allMessages = useMemo(() => {
+        const historicalIds = new Set(historicalMessages.map(m => m.id));
+        const liveMessages = messages.filter(m => !historicalIds.has(m.id));
+        return [...historicalMessages, ...liveMessages];
+    }, [historicalMessages, messages]);
+
+    useEffect(() => {
+        const container = chatScrollRef.current;
+        if (!container) return;
+
+        container.scrollTop = container.scrollHeight;
+    }, [allMessages]);
 
     return (
         <div className="min-h-[100dvh] overflow-hidden bg-transparent text-white">
@@ -267,11 +379,14 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             </div>
                         </div>
                     )}
+                    <div>
+
+                    </div>
                 </section>
 
                 <aside
                     data-shape-mask
-                    className="order-3 rounded-2xl border border-white/10 bg-slate-950/40 p-3 backdrop-blur-md"
+                    className="order-3 flex h-fit max-h-[720px] flex-col rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-md"
                 >
                     <p className="font-semibold uppercase tracking-widest text-white/30">
                         Chat da sala
@@ -281,34 +396,53 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                         ref={chatScrollRef}
                         className="chat-scroll mt-3 max-h-[320px] space-y-2 overflow-y-auto rounded-xl border border-white/6 bg-black/20 p-3 backdrop-blur-sm sm:max-h-[380px] xl:max-h-[calc(100dvh-220px)]"
                     >
-                        {messages.length === 0 ? (
+                        {allMessages.length === 0 ? (
                             <p className="mt-4 text-center text-white/25">
                                 Nenhuma mensagem ainda. Seja o primeiro!
                             </p>
                         ) : (
-                            messages.map((msg) => (
+                            allMessages.map((msg) => (
                                 <MessageCard key={msg.id} message={msg} timeTick={timeTick} />
                             ))
                         )}
                     </div>
-
-                    <form onSubmit={handleSendMessage} className="mt-3 flex gap-2">
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Mensagem..."
-                            maxLength={200}
-                            className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-emerald-500/60"
-                        />
-                        <button
-                            type="submit"
-                            disabled={!inputValue.trim() || !isConnected}
-                            className="rounded-xl bg-emerald-600 px-4 py-2 font-medium transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-30"
-                        >
-                            Enviar
-                        </button>
-                    </form>
+                    {status === 'loading' ? (
+                        <div className="mt-4 rounded-lg bg-gray-800 p-3 text-sm text-gray-400">
+                            Verificando sessão...
+                        </div>
+                    ) : !session?.user ? (
+                        <div className="mt-4 space-y-3">
+                            <textarea
+                                className="min-h-[90px] w-full rounded-lg border border-[var(--color-emerald-400)] bg-black-800 p-3 text-s outline-none"
+                                placeholder="Faça login para comentar enquanto joga..."
+                                disabled
+                            />
+                            <Link
+                                href="/auth/signin"
+                                className="block w-full rounded-lg bg-[var(--color-emerald-400)] py-2 text-center font-semibold hover:bg-[var(--color-emerald-500)] text-black transition"
+                            >
+                                Entrar para comentar
+                            </Link>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSendMessageWithHistory} className="mt-3 flex gap-2">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder="Mensagem..."
+                                maxLength={200}
+                                className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-emerald-500/60"
+                            />
+                            <button
+                                type="submit"
+                                disabled={!inputValue.trim() || !isConnected}
+                                className="rounded-xl bg-emerald-600 px-4 py-2 font-medium transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-30"
+                            >
+                                Enviar
+                            </button>
+                        </form>
+                    )}
                 </aside>
             </main>
         </div>
