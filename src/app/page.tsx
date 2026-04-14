@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AuthHeader from '@/components/auth-header';
 import ShapeWaveBackground from '@/components/shape-wave-background';
+import { GameFilters } from '@/components/game-filters'
+import { useGameFilters } from '@/hooks/use-game-filters'
 import { mockGames } from '@/lib/games';
 import { useGamesRoomCounts } from '@/hooks/use-games-room-counts';
 import { useLocale } from '@/context/locale-context';
@@ -12,16 +14,43 @@ export default function Home() {
   const { locale } = useLocale();
   const { playersByGame } = useGamesRoomCounts();
 
+  const gamesWithLiveCounts = mockGames.map((game) => ({
+    ...game,
+    playersOnline: playersByGame[game.id] ?? 0,
+  }));
+
+  const {
+    filters,
+    filteredGames,
+    uniqueSystems,
+    updateFilter,
+    resetFilters,
+    toggleSortDirection,
+    activeFilterCount,
+  } = useGameFilters(gamesWithLiveCounts)
+
+  type SortDirection = 'asc' | 'desc';
+
+  type GameFiltersState = {
+    search: string;
+    system: string;
+    sortBy: 'name' | 'system' | 'popularity';
+    sortDirection: SortDirection;
+  };
+
   const t = {
     pt: {
-      playingNow: 'jogando agora'
+      playingNow: 'jogando agora',
+      noResults: 'Nenhum jogo encontrado. Tente ajustar os filtros.',
+
     },
     en: {
       playingNow: 'playing now',
+      noResults: 'No games found. Try adjusting the filters.',
     },
   }[locale];
 
-  const gameRows = mockGames.reduce<typeof mockGames[]>((rows, game, index) => {
+  const gameRows = filteredGames.reduce<typeof filteredGames[]>((rows, game, index) => {
     const rowIndex = Math.floor(index / 4);
 
     if (!rows[rowIndex]) {
@@ -111,14 +140,17 @@ export default function Home() {
     'this boss has another phase???'
   ];
 
-  const newSubtitles = subtitles[Math.floor(Math.random() * subtitles.length)];
+  const [subtitle, setSubtitle] = useState(() =>
+    subtitles[Math.floor(Math.random() * subtitles.length)]
+  );
+
 
   useEffect(() => {
-    const element = document.getElementsByClassName("flicker-subtitle")[0] as HTMLElement;
+    const element = document.getElementsByClassName('flicker-subtitle')[0] as HTMLElement;
     if (element) {
-      element.innerText = newSubtitles;
+      element.innerText = subtitle;
     }
-  }, [newSubtitles]);
+  }, [subtitle]);
 
 
 
@@ -129,7 +161,7 @@ export default function Home() {
 
       <main className="main-crt px-4 py-8 md:px-8">
         <div className="crt-frame">
-          <div data-shape-mask>
+          <div data-shape-mask className="flex justify-end">
             <AuthHeader />
           </div>
 
@@ -138,39 +170,58 @@ export default function Home() {
               SocialRom
             </h1>
 
-            <p className="flicker-subtitle mx-auto max-w-2xl text-px16 text-[var(--color-text-secondary)]">
-            </p>
+            <p className="flicker-subtitle mx-auto max-w-2xl text-px16 text-[var(--color-text-secondary)]" />
           </section>
 
+          <div data-shape-mask>
+            <GameFilters
+              filters={filters}
+              uniqueSystems={uniqueSystems}
+              updateFilter={updateFilter}
+              resetFilters={resetFilters}
+              activeFilterCount={activeFilterCount}
+              resultCount={filteredGames.length}
+              toggleSortDirection={toggleSortDirection}
+            />
+          </div>
+
           <section className="game-cards-stack">
-            {gameRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="game-cards-container" data-shape-mask>
-                {row.map((game) => (
-                  <Link
-                    key={game.id}
-                    href={`/game/${game.id}`}
-                    className="game-card"
-                  >
-                    <img
-                      src={game.thumbnail}
-                      alt={game.title}
-                      className="game-card-image"
-                    />
-
-                    <div className="game-card-content">
-                      <h2 className="game-card-title">{game.title}</h2>
-
-                      <p className="game-card-system">{game.system}</p>
-
-                      <p className="game-card-status">
-                        {String(playersByGame[game.id] ?? 0).padStart(2, '0')}{' '}
-                        {t.playingNow.toUpperCase()}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+            {filteredGames.length === 0 ? (
+              <div className="no-results py-16 text-center" data-shape-mask>
+                <p className="text-lg text-[var(--color-text-secondary)]">
+                  {t.noResults}
+                </p>
               </div>
-            ))}
+            ) : (
+              gameRows.map((row, rowIndex) => (
+                <div key={rowIndex} className="game-cards-container" data-shape-mask>
+                  {row.map((game) => (
+                    <Link
+                      key={game.id}
+                      href={`/game/${game.id}`}
+                      className="game-card"
+                    >
+                      <img
+                        src={game.thumbnail}
+                        alt={game.title}
+                        className="game-card-image"
+                      />
+
+                      <div className="game-card-content">
+                        <h2 className="game-card-title">{game.title}</h2>
+
+                        <p className="game-card-system">{game.system}</p>
+
+                        <p className="game-card-status">
+                          {String(playersByGame[game.id] ?? 0).padStart(2, '0')}{' '}
+                          {t.playingNow.toUpperCase()}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ))
+            )}
           </section>
         </div>
       </main>

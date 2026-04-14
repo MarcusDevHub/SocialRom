@@ -30,15 +30,6 @@ export default function AuthHeader() {
 
     return (
         <header className="mb-6 flex items-center justify-between">
-            {/* Logo + título */}
-            <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-yellow-500/60 bg-black/40 shadow-[0_0_12px_rgba(0,0,0,0.8)]">
-                    <img
-                        src={'logoman.png'}
-                    />
-                </div>
-            </div>
-
             {/* Lado direito: idioma + sessão */}
             <div className="flex items-center gap-3">
                 {/* Seletor de idioma por bandeiras */}
