@@ -54,6 +54,7 @@ export function EmulatorPlayer({
         (window as any).EJS_gameUrl = romUrl;
         (window as any).EJS_gameName = gameTitle || romUrl.split('/').pop() || 'game';
         (window as any).EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+        (window as any).EJS_threads = false;
         (window as any).EJS_startOnLoaded = true;
         (window as any).EJS_volume = 0.7;
         (window as any).EJS_color = '#00FF80';
