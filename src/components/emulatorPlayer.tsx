@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-type EmulatorSystem = 'SNES' | 'GBA' | 'NES' | 'PS1';
+type EmulatorSystem = 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N64';
 
 type EmulatorPlayerProps = {
     romUrl: string;
@@ -15,6 +15,7 @@ const CORE_MAP: Record<EmulatorSystem, string> = {
     GBA: 'gba',
     NES: 'nes',
     PS1: 'psx',
+    N64: 'n64',
 };
 
 function getBiosUrl(system: EmulatorSystem) {

@@ -24,7 +24,7 @@ type MessageCardProps = {
 };
 
 const CONTROLS: Record<
-    'SNES' | 'GBA' | 'NES' | 'PS1',
+    'SNES' | 'GBA' | 'NES' | 'PS1' | 'N64',
     { label: string; key: string }[]
 > = {
     SNES: [
@@ -65,6 +65,19 @@ const CONTROLS: Record<
         { label: 'Start', key: 'Enter' },
         { label: 'Select', key: 'Shift' },
     ],
+    N64: [
+        { label: 'D-Pad / Analógico', key: '↑↓←→' },
+        { label: 'A', key: 'Z' },
+        { label: 'B', key: 'X' },
+        { label: 'Z', key: 'A' },
+        { label: 'L', key: 'Q' },
+        { label: 'R', key: 'W' },
+        { label: 'Start', key: 'Enter' },
+        { label: 'C-Up', key: 'I' },
+        { label: 'C-Down', key: 'K' },
+        { label: 'C-Left', key: 'J' },
+        { label: 'C-Right', key: 'L' },
+    ],
 };
 
 function formatTimeAgo(timestamp: string): string {
@@ -104,29 +117,34 @@ function MessageCard({ message, timeTick }: MessageCardProps) {
     );
 }
 
-function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' }) {
+function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N64' }) {
     const controls = CONTROLS[system];
 
     const saveInstructions = {
         SNES: {
             inGame: 'Use o sistema de save do próprio jogo.',
             state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: null,
+            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         GBA: {
             inGame: 'Use o sistema de save do próprio jogo.',
             state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: null,
+            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         NES: {
             inGame: 'Use o sistema de save do próprio jogo.',
             state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: null,
+            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         PS1: {
             inGame: 'Salve via Memory Card dentro do jogo.',
             state: 'Shift + F1 para salvar / F1 para carregar.',
             tip: 'Salve sempre antes de fechar — PS1 exige Memory Card!',
+        },
+        N64: {
+            inGame: 'Use o sistema de save do próprio jogo.',
+            state: 'Shift + F1 para salvar / F1 para carregar.',
+            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
     }[system];
 

@@ -23,6 +23,14 @@ const ALL_GAME_IDS = [
     'castlevania-sotn',
     'jackie-Chan-Stuntmaster',
     'pokemon-lazarus',
+    'Resident-Evil-3',
+    'Resident-Evil-Director-Cut',
+    'Bomberman-Fantasy-Race',
+    'Yu-Gi-Oh-Forbidden-Memories',
+    'Paper-Mario',
+    'Pokemon-Stadium',
+    'Pokemon-Stadium-2',
+    'Legend-of-Zelda-Majoras-Mask',
 ];
 
 // Função auxiliar para contar usuários em uma room

@@ -24,10 +24,10 @@ export default function Home() {
     filteredGames,
     uniqueSystems,
     updateFilter,
-    resetFilters,
     toggleSortDirection,
+    resetFilters,
     activeFilterCount,
-  } = useGameFilters(gamesWithLiveCounts)
+  } = useGameFilters(mockGames, playersByGame);
 
   type SortDirection = 'asc' | 'desc';
 
@@ -137,7 +137,8 @@ export default function Home() {
     'queued up, immediately regretted it',
     'all aim, no brain',
     'one more match, surely',
-    'this boss has another phase???'
+    'this boss has another phase???',
+    'Memes are the DNA of souls',
   ];
 
   const [subtitle, setSubtitle] = useState(() =>
