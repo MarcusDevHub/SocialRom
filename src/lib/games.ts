@@ -103,7 +103,7 @@ export const mockGames: Game[] = [
         title: 'Resident Evil 3 - Nemesis',
         system: 'PS1',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Resident%20Evil%203%20-%20Nemesis%20(Europe).chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/resident-evil-3-nemesis-1999_zmr6.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/residentevil3.jpg',
         playersOnline: 0,
     },
     {
@@ -111,7 +111,7 @@ export const mockGames: Game[] = [
         title: 'Resident Evil - Director Cut',
         system: 'PS1',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Resident%20Evil%20-%20Director%20Cut%20(Europe).chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/residentevil.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/residentevil.jpg',
         playersOnline: 0,
     },
     {
@@ -127,7 +127,7 @@ export const mockGames: Game[] = [
         title: 'Yu-Gi-Oh! Forbidden Memories',
         system: 'PS1',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Yu-Gi-Oh!%20Forbidden%20Memories%20(Europe).chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/yugioh.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/yugioh.jpg',
         playersOnline: 0,
     },
     {
@@ -135,7 +135,7 @@ export const mockGames: Game[] = [
         title: 'The Legend of Zelda: Ocarina of Time',
         system: 'N64',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Legend%20of%20Zelda,%20The%20-%20Ocarina%20of%20Time%20(Europe)%20(Collectors%20Edition).z64',
-        thumbnail: 'https://archive.org/download/socialrom-games/zeldaman.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/zeldaman.jpg',
         playersOnline: 0,
     },
     {
@@ -159,7 +159,7 @@ export const mockGames: Game[] = [
         title: 'Pokemon Stadium 2',
         system: 'N64',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Pokemon%20Stadium%202%20(Europe).z64',
-        thumbnail: 'https://archive.org/download/socialrom-games/pokemon-stadium2.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/pokemon-stadium2.jpg',
         playersOnline: 0,
     },
     {
