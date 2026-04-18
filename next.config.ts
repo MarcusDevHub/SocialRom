@@ -1,23 +1,31 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/(.*)',
         headers: [
           {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
           },
           {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
           },
         ],
       },
-    ];
+    ]
   },
-};
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'archive.org',
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig
