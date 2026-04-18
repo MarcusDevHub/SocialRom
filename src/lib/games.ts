@@ -15,7 +15,7 @@ export const mockGames: Game[] = [
         title: 'Castlevania Aria of Sorrow',
         system: 'GBA',
         romUrl: 'https://archive.org/download/socialrom-games/Castlevania%20-%20Aria%20of%20Sorrow%20%28Europe%29%20%28En%2CFr%2CDe%29.gba',
-        thumbnail: 'https://archive.org/download/socialrom-games/castle-aria.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/castle-aria.jpg',
         playersOnline: 0,
     },
     {
@@ -23,7 +23,7 @@ export const mockGames: Game[] = [
         title: 'Pokémon Emerald',
         system: 'GBA',
         romUrl: 'https://archive.org/download/socialrom-games/Pokemon%20-%20Emerald%20Version%20%28USA%2C%20Europe%29.gba',
-        thumbnail: 'https://archive.org/download/socialrom-games/poke.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/poke.jpg',
         playersOnline: 0,
     },
     {
@@ -31,7 +31,7 @@ export const mockGames: Game[] = [
         title: 'Pokémon Unbound',
         system: 'GBA',
         romUrl: 'https://archive.org/download/socialrom-games/Pokemon%20-%20Unbound%20%28v2.1.1.1%29.gba',
-        thumbnail: 'https://archive.org/download/socialrom-games/pokeunbound.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/pokeunbound.jpg',
         playersOnline: 0,
     },
     {
@@ -39,7 +39,7 @@ export const mockGames: Game[] = [
         title: 'Pokémon Lazarus',
         system: 'GBA',
         romUrl: 'https://archive.org/download/socialrom-games/Pokemon%20-%20Lazarus%20v2.0.gba',
-        thumbnail: 'https://archive.org/download/socialrom-games/lazarus.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/lazarus.jpg',
         playersOnline: 0,
     },
     {
@@ -47,7 +47,7 @@ export const mockGames: Game[] = [
         title: 'Earthbound',
         system: 'SNES',
         romUrl: 'https://archive.org/download/socialrom-games/EarthBound%20(USA).sfc',
-        thumbnail: 'https://archive.org/download/socialrom-games/earthbound.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/earthbound.jpg',
         playersOnline: 0,
     },
     {
@@ -55,7 +55,7 @@ export const mockGames: Game[] = [
         title: 'The Legend of Zelda: A Link to the Past',
         system: 'SNES',
         romUrl: 'https://archive.org/download/socialrom-games/Zelda%20-%20A%20Link%20to%20the%20Past%20(Canada).sfc',
-        thumbnail: 'https://archive.org/download/socialrom-games/zelda.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/zelda.jpg',
         playersOnline: 0,
     },
     {
@@ -63,7 +63,7 @@ export const mockGames: Game[] = [
         title: 'Mega Man X',
         system: 'SNES',
         romUrl: 'https://archive.org/download/socialrom-games/Mega%20Man%20X%20(Europe).sfc',
-        thumbnail: 'https://archive.org/download/socialrom-games/megaman.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/megaman.jpg',
         playersOnline: 0,
     },
     {
@@ -71,7 +71,7 @@ export const mockGames: Game[] = [
         title: 'Final Fantasy VI',
         system: 'SNES',
         romUrl: 'https://archive.org/download/socialrom-games/Final%20Fantasy%20VI.sfc',
-        thumbnail: 'https://archive.org/download/socialrom-games/ffvi.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/ffvi.jpg',
         playersOnline: 0,
     },
     {
@@ -79,7 +79,7 @@ export const mockGames: Game[] = [
         title: 'Castlevania IV',
         system: 'SNES',
         romUrl: 'https://archive.org/download/socialrom-games/Super%20Castlevania%20IV%20(Europe).sfc',
-        thumbnail: 'https://archive.org/download/socialrom-games/super_castlevania_iv.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/super_castlevania_iv.jpg',
         playersOnline: 0,
     },
     {
@@ -87,7 +87,7 @@ export const mockGames: Game[] = [
         title: 'Castlevania Symphony of the Night',
         system: 'PS1',
         romUrl: 'https://archive.org/download/socialrom-games/Castlevania%20-%20Symphony%20of%20the%20Night%20(USA).chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/castlevania-sotn.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/castlevania-sotn.jpg',
         playersOnline: 0,
     },
     {
@@ -95,7 +95,7 @@ export const mockGames: Game[] = [
         title: 'Jackie Chan Stuntmaster',
         system: 'PS1',
         romUrl: 'https://archive.org/download/socialrom-games/Jackie%20Chan%20Stuntmaster%20(Europe).chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/jackie-chan-stuntmaster.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/jackie-chan-stuntmaster.jpg',
         playersOnline: 0,
     },
     {
@@ -119,7 +119,7 @@ export const mockGames: Game[] = [
         title: 'Bomberman Fantasy Race',
         system: 'PS1',
         romUrl: 'https://archive.org/download/socialrom-games/Bomberman%20Fantasy%20Race%20%28Europe%29%20%28En%2CFr%2CDe%2CEs%29.chd',
-        thumbnail: 'https://archive.org/download/socialrom-games/bomberman.jpg/thumbs/bomberman.jpg',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/bomberman.jpg',
         playersOnline: 0,
     },
     {
@@ -143,7 +143,7 @@ export const mockGames: Game[] = [
         title: 'Paper Mario',
         system: 'N64',
         romUrl: 'https://archive.org/download/socialrom-games/Paper%20Mario%20%28Europe%29%20%28En%2CFr%2CDe%2CEs%29.z64',
-        thumbnail: 'https://archive.org/download/socialrom-games/papelmario.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/papelmario.jpg',
         playersOnline: 0,
     },
     {
@@ -151,7 +151,7 @@ export const mockGames: Game[] = [
         title: 'Pokemon Stadium',
         system: 'N64',
         romUrl: 'https://archive.org/download/socialrom-games/Pokemon%20Stadium%20(Europe).z64',
-        thumbnail: 'https://archive.org/download/socialrom-games/pokemon-stadium.jpg/',
+        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/pokemon-stadium.jpg',
         playersOnline: 0,
     },
     {
