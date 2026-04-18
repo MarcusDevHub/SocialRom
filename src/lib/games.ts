@@ -103,7 +103,7 @@ export const mockGames: Game[] = [
         title: 'Resident Evil 3 - Nemesis',
         system: 'PS1',
         romUrl: 'https://f005.backblazeb2.com/file/socialrom-roms/Resident%20Evil%203%20-%20Nemesis%20(Europe).chd',
-        thumbnail: 'https://ia903101.us.archive.org/33/items/socialrom-games/residentevil3.jpg',
+        thumbnail: 'https://dn721800.ca.archive.org/0/items/socialrom-games/resident-evil-3-nemesis-1999_zmr6.jpg',
         playersOnline: 0,
     },
     {
