@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import type { Game } from '@/lib/games';
 import { useRoomSocket } from '@/hooks/use-room-socket';
 import { EmulatorPlayer } from '@/components/emulatorPlayer';
+import { useLocale } from '@/context/locale-context';
 
 type Message = {
     id: number;
@@ -21,6 +22,7 @@ type GameRoomClientProps = {
 type MessageCardProps = {
     message: Message;
     timeTick: number;
+    locale: 'pt' | 'en';
 };
 
 const CONTROLS: Record<
@@ -80,71 +82,89 @@ const CONTROLS: Record<
     ],
 };
 
-function formatTimeAgo(timestamp: string): string {
+function formatTimeAgo(timestamp: string, locale: 'pt' | 'en'): string {
     const created = new Date(timestamp).getTime();
     const now = Date.now();
     const diffSec = Math.max(0, Math.floor((now - created) / 1000));
 
-    if (diffSec < 60) return `há ${diffSec}s`;
+    if (locale === 'en') {
+        if (diffSec < 60) return `${diffSec}s ago`;
+        const diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return `${diffMin}m ago`;
+        const diffHours = Math.floor(diffMin / 60);
+        if (diffHours < 24) return `${diffHours}h ago`;
+        return `${Math.floor(diffHours / 24)}d ago`;
+    }
 
+    if (diffSec < 60) return `há ${diffSec}s`;
     const diffMin = Math.floor(diffSec / 60);
     if (diffMin < 60) return `há ${diffMin}m`;
-
     const diffHours = Math.floor(diffMin / 60);
     if (diffHours < 24) return `há ${diffHours}h`;
-
-    const diffDays = Math.floor(diffHours / 24);
-    return `há ${diffDays}d`;
+    return `há ${Math.floor(diffHours / 24)}d`;
 }
 
-function MessageCard({ message, timeTick }: MessageCardProps) {
+function MessageCard({ message, timeTick, locale }: MessageCardProps) {
     const timeLabel = useMemo(
-        () => formatTimeAgo(message.createdAt),
-        [message.createdAt, timeTick],
+        () => formatTimeAgo(message.createdAt, locale),
+        [message.createdAt, timeTick, locale],
     );
 
     return (
         <div className="flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm">
             <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold text-emerald-400">
-                    @{message.username}
-                </span>
+                <span className="font-semibold text-emerald-400">@{message.username}</span>
                 <span className="text-white/30">{timeLabel}</span>
             </div>
-
             <p className="break-words text-white/80">{message.content}</p>
         </div>
     );
 }
 
-function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N64' }) {
+function ControlsPanel({
+    system,
+    locale,
+}: {
+    system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N64';
+    locale: 'pt' | 'en';
+}) {
     const controls = CONTROLS[system];
 
     const saveInstructions = {
         SNES: {
-            inGame: 'Use o sistema de save do próprio jogo.',
-            state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
+            inGame: locale === 'en' ? "Use the game's built-in save system." : 'Use o sistema de save do próprio jogo.',
+            state: locale === 'en' ? 'Shift + F1 to save / F1 to load.' : 'Shift + F1 para salvar / F1 para carregar.',
+            tip: locale === 'en'
+                ? 'Always backup your saves/save states locally on mobile or PC.'
+                : 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         GBA: {
-            inGame: 'Use o sistema de save do próprio jogo.',
-            state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
+            inGame: locale === 'en' ? "Use the game's built-in save system." : 'Use o sistema de save do próprio jogo.',
+            state: locale === 'en' ? 'Shift + F1 to save / F1 to load.' : 'Shift + F1 para salvar / F1 para carregar.',
+            tip: locale === 'en'
+                ? 'Always backup your saves/save states locally on mobile or PC.'
+                : 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         NES: {
-            inGame: 'Use o sistema de save do próprio jogo.',
-            state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
+            inGame: locale === 'en' ? "Use the game's built-in save system." : 'Use o sistema de save do próprio jogo.',
+            state: locale === 'en' ? 'Shift + F1 to save / F1 to load.' : 'Shift + F1 para salvar / F1 para carregar.',
+            tip: locale === 'en'
+                ? 'Always backup your saves/save states locally on mobile or PC.'
+                : 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
         PS1: {
-            inGame: 'Salve via Memory Card dentro do jogo.',
-            state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: 'Salve sempre antes de fechar — PS1 exige Memory Card!',
+            inGame: locale === 'en' ? 'Save via Memory Card inside the game.' : 'Salve via Memory Card dentro do jogo.',
+            state: locale === 'en' ? 'Shift + F1 to save / F1 to load.' : 'Shift + F1 para salvar / F1 para carregar.',
+            tip: locale === 'en'
+                ? 'Always save before closing — PS1 requires Memory Card!'
+                : 'Salve sempre antes de fechar — PS1 exige Memory Card!',
         },
         N64: {
-            inGame: 'Use o sistema de save do próprio jogo.',
-            state: 'Shift + F1 para salvar / F1 para carregar.',
-            tip: 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
+            inGame: locale === 'en' ? "Use the game's built-in save system." : 'Use o sistema de save do próprio jogo.',
+            state: locale === 'en' ? 'Shift + F1 to save / F1 to load.' : 'Shift + F1 para salvar / F1 para carregar.',
+            tip: locale === 'en'
+                ? 'Always backup your saves/save states locally on mobile or PC.'
+                : 'Sempre faça backup ou armazene seus saves / savesStates localmente seja mobile ou pc.',
         },
     }[system];
 
@@ -154,7 +174,7 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N
             className="rounded-2xl border border-white/10 bg-slate-950/40 p-4 backdrop-blur-md"
         >
             <h3 className="mb-3 font-semibold uppercase tracking-widest text-white/40">
-                Controles — {system}
+                {locale === 'en' ? 'Controls' : 'Controles'} — {system}
             </h3>
 
             <div className="space-y-2">
@@ -164,24 +184,23 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N
                         className="flex items-center justify-between gap-3 rounded-lg border border-white/8 bg-black/20 px-3 py-2 backdrop-blur-sm"
                     >
                         <span className="text-white/60">{label}</span>
-                        <kbd className="rounded-md bg-white/10 px-2 font-mono text-white/85">
-                            {key}
-                        </kbd>
+                        <kbd className="rounded-md bg-white/10 px-2 font-mono text-white/85">{key}</kbd>
                     </div>
                 ))}
             </div>
 
-            {/* INSTRUÇÕES DE SAVE */}
             <div className="mt-4 border-t border-white/10 pt-2">
                 <h4 className="mb-2 font-semibold uppercase tracking-widest text-white/40">
-                    Como Salvar
+                    {locale === 'en' ? 'How to Save' : 'Como Salvar'}
                 </h4>
 
                 <div className="space-y-2 text-s">
                     <div className="flex items-start gap-2">
                         <span className="shrink-0 text-emerald-400">▸</span>
                         <p className="text-white/70">
-                            <span className="font-medium text-white/90">No jogo:</span>{' '}
+                            <span className="font-medium text-white/90">
+                                {locale === 'en' ? 'In-game:' : 'No jogo:'}
+                            </span>{' '}
                             {saveInstructions.inGame}
                         </p>
                     </div>
@@ -197,9 +216,7 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N
                     {saveInstructions.tip && (
                         <div className="mt-2 flex items-start gap-2 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-2">
                             <span className="shrink-0 text-yellow-400">⚠</span>
-                            <p className="text-yellow-300/90 text-[15px]">
-                                {saveInstructions.tip}
-                            </p>
+                            <p className="text-yellow-300/90 text-[15px]">{saveInstructions.tip}</p>
                         </div>
                     )}
                 </div>
@@ -210,6 +227,7 @@ function ControlsPanel({ system }: { system: 'SNES' | 'GBA' | 'NES' | 'PS1' | 'N
 
 export default function GameRoomClient({ game }: GameRoomClientProps) {
     const { data: session, status } = useSession();
+    const { locale } = useLocale();
     const { roomCount, isConnected, sendMessage, socket } = useRoomSocket(game.id);
 
     const [messages, setMessages] = useState<Message[]>([]);
@@ -218,10 +236,35 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
     const [showEmulator] = useState(true);
 
     const chatScrollRef = useRef<HTMLDivElement | null>(null);
-
-
     const [historicalMessages, setHistoricalMessages] = useState<Message[]>([]);
     const [hasLoadedHistory, setHasLoadedHistory] = useState(false);
+
+    const t = {
+        pt: {
+            back: '← Voltar para a biblioteca',
+            playing: 'jogando',
+            connecting: 'conectando...',
+            chatTitle: 'Chat da sala',
+            noMessages: 'Nenhuma mensagem ainda. Seja o primeiro!',
+            checkingSession: 'Verificando sessão...',
+            loginToChat: 'Faça login para comentar enquanto joga...',
+            loginButton: 'Entrar para comentar',
+            messagePlaceholder: 'Mensagem...',
+            send: 'Enviar',
+        },
+        en: {
+            back: '← Back to library',
+            playing: 'playing',
+            connecting: 'connecting...',
+            chatTitle: 'Room Chat',
+            noMessages: 'No messages yet. Be the first!',
+            checkingSession: 'Checking session...',
+            loginToChat: 'Sign in to chat while you play...',
+            loginButton: 'Sign in to chat',
+            messagePlaceholder: 'Message...',
+            send: 'Send',
+        },
+    }[locale];
 
     useEffect(() => {
         const interval = setInterval(() => setTimeTick((t) => t + 1), 30_000);
@@ -230,31 +273,18 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
 
     useEffect(() => {
         if (!socket) return;
-
-        const handleMessage = (msg: Message) => {
-            setMessages((prev) => [...prev, msg]);
-        };
-
+        const handleMessage = (msg: Message) => setMessages((prev) => [...prev, msg]);
         socket.on('chat-message', handleMessage);
-
-        return () => {
-            socket.off('chat-message', handleMessage);
-        };
+        return () => { socket.off('chat-message', handleMessage); };
     }, [socket]);
-
-    const handleBackToLibrary = () => {
-        window.location.href = '/';
-    };
 
     useEffect(() => {
         const previousHtmlOverflow = document.documentElement.style.overflow;
         const previousBodyOverflow = document.body.style.overflow;
         const previousBodyHeight = document.body.style.height;
-
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
         document.body.style.height = '100dvh';
-
         return () => {
             document.documentElement.style.overflow = previousHtmlOverflow;
             document.body.style.overflow = previousBodyOverflow;
@@ -264,59 +294,28 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
 
     const canSendMessage = Boolean(session?.user) && isConnected;
 
-    function handleSendMessage(e: React.FormEvent) {
-        e.preventDefault();
-        if (!canSendMessage) return;
-        if (!inputValue.trim()) return;
-
-        sendMessage({
-            roomId: game.id,
-            username: session!.user.name ?? 'Usuário',
-            content: inputValue.trim(),
-        });
-
-        setInputValue('');
-    }
-
-    // Carrega histórico ao conectar
     useEffect(() => {
-        if (!isConnected || hasLoadedHistory) {
-            console.log('Não carregando:', { isConnected, hasLoadedHistory });
-
-            return;
-        }
-
+        if (!isConnected || hasLoadedHistory) return;
         const loadHistory = async () => {
-            console.log('Carregando histórico room:', game.id);
-
             try {
                 const res = await fetch(`/api/chat?roomId=${game.id}`);
-                console.log('Status:', res.status);
-
                 if (!res.ok) throw new Error('Falha ao carregar histórico');
                 const data = await res.json();
-                console.log('Dados:', data);
                 setHistoricalMessages(data.messages || []);
                 setHasLoadedHistory(true);
             } catch (err) {
                 console.error('Erro ao carregar histórico:', err);
             }
         };
-
         loadHistory();
     }, [isConnected, game.id, hasLoadedHistory]);
 
-    // Envia + salva no histórico
     const handleSendMessageWithHistory = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!canSendMessage) return;
-        if (!inputValue.trim()) return;
-
+        if (!canSendMessage || !inputValue.trim()) return;
         const username = session!.user.name ?? 'Usuário';
         const content = inputValue.trim();
-
         sendMessage({ roomId: game.id, username, content });
-
         try {
             await fetch('/api/chat', {
                 method: 'POST',
@@ -326,11 +325,9 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
         } catch (err) {
             console.error('Erro ao salvar no histórico:', err);
         }
-
         setInputValue('');
     }, [canSendMessage, inputValue, sendMessage, game.id, session]);
 
-    // Combina histórico + tempo real
     const allMessages = useMemo(() => {
         const historicalIds = new Set(historicalMessages.map(m => m.id));
         const liveMessages = messages.filter(m => !historicalIds.has(m.id));
@@ -340,7 +337,6 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
     useEffect(() => {
         const container = chatScrollRef.current;
         if (!container) return;
-
         container.scrollTop = container.scrollHeight;
     }, [allMessages]);
 
@@ -352,10 +348,10 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
             >
                 <div className="flex items-center justify-between gap-3 py-4">
                     <button
-                        onClick={handleBackToLibrary}
+                        onClick={() => window.location.href = '/'}
                         className="shrink-0 text-white/50 transition hover:text-white"
                     >
-                        ← Voltar para a biblioteca
+                        {t.back}
                     </button>
 
                     <div className="min-w-0 text-center">
@@ -365,12 +361,9 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
 
                     <div className="shrink-0 text-right">
                         <div className="flex items-center justify-end gap-2">
-                            <span
-                                className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-400' : 'bg-yellow-400'
-                                    }`}
-                            />
+                            <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-400' : 'bg-yellow-400'}`} />
                             <span className="text-white/40">
-                                {isConnected ? `${roomCount} jogando` : 'conectando...'}
+                                {isConnected ? `${roomCount} ${t.playing}` : t.connecting}
                             </span>
                         </div>
                     </div>
@@ -379,7 +372,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
 
             <main className="mx-auto grid max-w-[1800px] gap-4 p-4 xl:grid-cols-[260px_minmax(0,1fr)_360px]">
                 <aside className="order-2 hidden xl:order-1 xl:block">
-                    <ControlsPanel system={game.system} />
+                    <ControlsPanel system={game.system} locale={locale} />
                 </aside>
 
                 <section className="order-1 xl:order-2">
@@ -397,9 +390,6 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             </div>
                         </div>
                     )}
-                    <div>
-
-                    </div>
                 </section>
 
                 <aside
@@ -407,7 +397,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                     className="order-3 flex h-fit max-h-[720px] flex-col rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-md"
                 >
                     <p className="font-semibold uppercase tracking-widest text-white/30">
-                        Chat da sala
+                        {t.chatTitle}
                     </p>
 
                     <div
@@ -415,31 +405,30 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                         className="chat-scroll mt-3 max-h-[320px] space-y-2 overflow-y-auto rounded-xl border border-white/6 bg-black/20 p-3 backdrop-blur-sm sm:max-h-[380px] xl:max-h-[calc(100dvh-220px)]"
                     >
                         {allMessages.length === 0 ? (
-                            <p className="mt-4 text-center text-white/25">
-                                Nenhuma mensagem ainda. Seja o primeiro!
-                            </p>
+                            <p className="mt-4 text-center text-white/25">{t.noMessages}</p>
                         ) : (
                             allMessages.map((msg) => (
-                                <MessageCard key={msg.id} message={msg} timeTick={timeTick} />
+                                <MessageCard key={msg.id} message={msg} timeTick={timeTick} locale={locale} />
                             ))
                         )}
                     </div>
+
                     {status === 'loading' ? (
                         <div className="mt-4 rounded-lg bg-gray-800 p-3 text-sm text-gray-400">
-                            Verificando sessão...
+                            {t.checkingSession}
                         </div>
                     ) : !session?.user ? (
                         <div className="mt-4 space-y-3">
                             <textarea
                                 className="min-h-[90px] w-full rounded-lg border border-[var(--color-emerald-400)] bg-black-800 p-3 text-s outline-none"
-                                placeholder="Faça login para comentar enquanto joga..."
+                                placeholder={t.loginToChat}
                                 disabled
                             />
                             <Link
                                 href="/auth/signin"
                                 className="block w-full rounded-lg bg-[var(--color-emerald-400)] py-2 text-center font-semibold hover:bg-[var(--color-emerald-500)] text-black transition"
                             >
-                                Entrar para comentar
+                                {t.loginButton}
                             </Link>
                         </div>
                     ) : (
@@ -448,7 +437,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                                 type="text"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
-                                placeholder="Mensagem..."
+                                placeholder={t.messagePlaceholder}
                                 maxLength={200}
                                 className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-emerald-500/60"
                             />
@@ -457,7 +446,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                                 disabled={!inputValue.trim() || !isConnected}
                                 className="rounded-xl bg-emerald-600 px-4 py-2 font-medium transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-30"
                             >
-                                Enviar
+                                {t.send}
                             </button>
                         </form>
                     )}
