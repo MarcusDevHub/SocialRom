@@ -223,12 +223,12 @@ function SavePanel({ locale }: { locale: 'pt' | 'en' }) {
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                             {steps.map((step) => (
                                 <div key={step.num} className={`flex gap-3 rounded-xl border p-3 xl:flex-col xl:gap-1.5 ${step.color}`}>
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-white/60">
+                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-s font-bold text-white/60">
                                         {step.num}
                                     </span>
                                     <div>
-                                        <p className="text-xs font-semibold leading-snug text-white/80">{step.title}</p>
-                                        <p className="mt-0.5 break-words text-xs leading-relaxed text-white/50">{step.desc}</p>
+                                        <p className="text-s font-semibold leading-snug text-white/80">{step.title}</p>
+                                        <p className="mt-0.5 break-words text-s leading-relaxed text-white/50">{step.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -238,15 +238,15 @@ function SavePanel({ locale }: { locale: 'pt' | 'en' }) {
                             <div className="flex gap-3 rounded-xl border border-purple-500/20 bg-purple-500/8 p-3 xl:flex-col xl:gap-1.5">
                                 <span className="text-base">📱</span>
                                 <div>
-                                    <p className="text-xs font-semibold leading-snug text-purple-300">{t.mobileTitle}</p>
-                                    <p className="mt-0.5 break-words text-xs leading-relaxed text-white/50">{t.mobileDesc}</p>
+                                    <p className="text-s font-semibold leading-snug text-purple-300">{t.mobileTitle}</p>
+                                    <p className="mt-0.5 break-words text-s leading-relaxed text-white/50">{t.mobileDesc}</p>
                                 </div>
                             </div>
                             <div className="flex gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 xl:flex-col xl:gap-1.5">
                                 <span className="text-base">⚠️</span>
                                 <div>
-                                    <p className="text-xs font-semibold leading-snug text-yellow-400">{t.warnTitle}</p>
-                                    <p className="mt-0.5 break-words text-xs leading-relaxed text-white/50">{t.warnDesc}</p>
+                                    <p className="text-s font-semibold leading-snug text-yellow-400">{t.warnTitle}</p>
+                                    <p className="mt-0.5 break-words text-s leading-relaxed text-white/50">{t.warnDesc}</p>
                                 </div>
                             </div>
                         </div>
@@ -332,7 +332,7 @@ function RomDropZone({
             </div>
             <div className="text-center px-4">
                 <p className="text-sm font-semibold text-white/80 sm:text-base">{label.title}</p>
-                <p className="mt-1 text-xs text-yellow-300 sm:text-s">{label.sub}</p>
+                <p className="mt-1 text-s text-yellow-300 sm:text-s">{label.sub}</p>
             </div>
             <button
                 onClick={() => fileInputRef.current?.click()}
@@ -534,7 +534,7 @@ export default function GameRoomClient({ game }: GameRoomClientProps) {
                             </div>
                             <button
                                 onClick={() => changeRomRef.current?.click()}
-                                className="shrink-0 rounded-lg bg-white/10 px-3 py-1 text-xs text-white/60 transition hover:bg-white/20 hover:text-white"
+                                className="shrink-0 rounded-lg bg-white/10 px-3 py-1 text-s text-white/60 transition hover:bg-white/20 hover:text-white"
                             >
                                 {t.changeRom}
                             </button>
