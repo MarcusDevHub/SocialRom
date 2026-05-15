@@ -102,7 +102,6 @@ body {
 .main-crt {
   position: relative;
   z-index: 2;
-  padding-bottom: 40px;
 }
 
 /* O frame agora não desenha uma placa azul na frente */
@@ -134,8 +133,6 @@ body {
 
 .game-page-root {
   min-height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
 }
 
 /* ---------- CARDS ---------- */
@@ -404,5 +401,15 @@ body {
 
   to {
     text-shadow: 2px 0.5px 2px #ea36af, -1px -0.5px 2px #75fa69;
+  }
+}
+
+/* Adicione no globals.css */
+@media (orientation: landscape) and (max-height: 500px) {
+  .emulator-wrapper {
+    aspect-ratio: auto;
+    height: calc(100svh - 56px);
+    /* 56px = header */
+    width: 100%;
   }
 }
