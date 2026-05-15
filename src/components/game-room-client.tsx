@@ -332,11 +332,11 @@ function RomDropZone({
             </div>
             <div className="text-center px-4">
                 <p className="text-sm font-semibold text-white/80 sm:text-base">{label.title}</p>
-                <p className="mt-1 text-xs text-yellow-300 sm:text-sm">{label.sub}</p>
+                <p className="mt-1 text-xs text-yellow-300 sm:text-s">{label.sub}</p>
             </div>
             <button
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold transition hover:bg-emerald-500 active:scale-95"
+                className="rounded-xl bg-emerald-600 px-5 py-2 text-s font-semibold transition hover:bg-emerald-500 active:scale-95"
             >
                 {label.btn}
             </button>
