@@ -35,7 +35,7 @@
 
 O projeto combina emulação via **EmulatorJS**, autenticação segura com **NextAuth + Prisma**, chat persistente com **Socket.IO**, e um design visual único inspirado em monitores CRT com efeitos de onda (ShapeWave Background).
 
-As ROMs são servidas via **Backblaze B2** com CORS configurado, garantindo compatibilidade total com o EmulatorJS sem depender de proxies intermediários.
+Por motivos de direitos autorais, as ROMs não são distribuídas diretamente pela plataforma, mas sim pelo usuário.
 
 ---
 
